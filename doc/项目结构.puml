@@ -1,0 +1,27 @@
+@startuml
+'https://plantuml.com/component-diagram
+package "HTTP API"{
+    [ddd-start]
+    [ddd-web]
+}
+
+package "RPC API"{
+    [ddd-client]
+    [ddd-client-impl]
+}
+
+
+[ddd-start] --> [ddd-web]
+
+[ddd-web] --> [ddd-service]
+
+[ddd-client] --> [ddd-bean]
+
+[ddd-client-impl] --> [ddd-client]
+[ddd-client-impl] --> [ddd-service]
+
+[ddd-service] --> [ddd-dao]
+[ddd-service] --> [ddd-common]
+[ddd-service] --> [ddd-bean]
+[ddd-service] --> [ddd-integration]
+@enduml

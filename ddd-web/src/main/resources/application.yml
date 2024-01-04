@@ -1,0 +1,27 @@
+logging:
+  level:
+    cc.mikaka: debug
+
+server:
+  port: 8080
+spring:
+  application:
+    name: ddd
+  datasource:
+    username: root
+    password: 123456
+    url: jdbc:mysql://127.0.0.1:3306/ddd?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&useSSL=false
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+mybatis:
+  mapper-locations: classpath:mapper/*DAO.xml
+  type-aliases-package: cc.mikaka.ddd.dataobject
+  configuration:
+    log-impl: org.apache.ibatis.logging.log4j2.Log4j2Impl
+springdoc:
+  api-docs:
+    dev-url: http://localhost:8080
+    prod-url: http://localhost:8080/
+    enabled: true

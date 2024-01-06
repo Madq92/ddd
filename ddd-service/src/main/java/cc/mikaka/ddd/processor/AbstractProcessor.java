@@ -23,9 +23,7 @@ import java.util.Objects;
  * 核心业务逻辑抽象
  **/
 @Log4j2
-public abstract class AbstractProcessor<Model, Request extends BaseRequest, BizResult>
-        extends BaseProcessor<Model, Request, BizResult> {
-
+public abstract class AbstractProcessor<Model, Request extends BaseRequest, BizResult> extends BaseProcessor<Model, Request, BizResult> {
     @Autowired
     private TransactionTemplate transactionTemplate;
     @Autowired

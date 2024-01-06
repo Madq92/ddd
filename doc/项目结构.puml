@@ -20,8 +20,10 @@ package "RPC API"{
 [ddd-client-impl] --> [ddd-client]
 [ddd-client-impl] --> [ddd-service]
 
-[ddd-service] --> [ddd-dao]
-[ddd-service] --> [ddd-common]
+[ddd-service] --> [ddd-core]
 [ddd-service] --> [ddd-bean]
 [ddd-service] --> [ddd-integration]
+
+[ddd-core] --> [ddd-dao]
+[ddd-core] --> [ddd-common]
 @enduml

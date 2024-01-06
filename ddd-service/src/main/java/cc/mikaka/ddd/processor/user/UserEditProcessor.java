@@ -2,6 +2,14 @@ package cc.mikaka.ddd.processor.user;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import cc.mikaka.ddd.common.enums.ActionType;
+import cc.mikaka.ddd.common.enums.BizType;
+import cc.mikaka.ddd.core.model.UserModel;
+import cc.mikaka.ddd.core.repository.UserRepository;
+import cc.mikaka.ddd.core.repository.condition.UserQueryCondition;
+import cc.mikaka.ddd.processor.AbstractProcessor;
+import cc.mikaka.ddd.processor.Processable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import cc.mikaka.ddd.bean.dto.UserDTO;
@@ -11,14 +19,11 @@ import cc.mikaka.ddd.common.lock.BaseLockInfo;
 import cc.mikaka.ddd.common.lock.UserLockInfo;
 import cc.mikaka.ddd.common.util.AssertUtil;
 import cc.mikaka.ddd.convertor.UserConvert;
-import cc.mikaka.ddd.model.user.UserModel;
-import cc.mikaka.ddd.processor.AbstractProcessor;
-import cc.mikaka.ddd.repository.UserRepository;
-import cc.mikaka.ddd.repository.condition.UserQueryCondition;
 import com.google.common.collect.Lists;
 
 @Component
-public class UserUpdateProcessor extends AbstractProcessor<UserModel, CreateUserRequest, String> {
+@Processable(bizType = BizType.USER, actionType = ActionType.EDIT)
+public class UserEditProcessor extends AbstractProcessor<UserModel, CreateUserRequest, String> {
 
     @Autowired
     UserRepository userRepository;

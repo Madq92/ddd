@@ -1,11 +1,12 @@
-package cc.mikaka.ddd.repository;
+package cc.mikaka.ddd.core.repository;
+
+
+import cc.mikaka.ddd.core.model.UserModel;
+import cc.mikaka.ddd.core.repository.condition.UserQueryCondition;
 
 import java.util.List;
-import cc.mikaka.ddd.model.user.UserModel;
-import cc.mikaka.ddd.repository.condition.UserQueryCondition;
 
 public interface UserRepository {
-
     UserModel queryByUserId(String userId);
 
     void insert(UserModel userModel);
@@ -13,4 +14,5 @@ public interface UserRepository {
     void update(UserModel userModel);
 
     List<UserModel> queryList(UserQueryCondition condition);
+
 }

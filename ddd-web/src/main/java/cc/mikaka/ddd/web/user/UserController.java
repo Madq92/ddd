@@ -25,11 +25,11 @@ public class UserController {
     UserService userService;
 
     @Operation(summary = "User获取ByIdddd")
-    @GetMapping("/queryById")
-    public CommonResult<UserDTO> queryById(@RequestParam("userId") @Parameter(description = "用户ID") String userId) {
+    @GetMapping("/getById")
+    public CommonResult<UserDTO> getById(@RequestParam("userId") @Parameter(description = "用户ID") String userId) {
         UserIdRequest request = new UserIdRequest();
         request.setUserId(userId);
-        return CommonResult.createSucc(userService.queryById(request));
+        return CommonResult.createSucc(userService.getById(request));
     }
 
     @Operation(summary = "User列表")

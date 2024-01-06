@@ -18,11 +18,7 @@
         </dependency>
         <dependency>
             <groupId>cc.mikaka</groupId>
-            <artifactId>ddd-dao</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>cc.mikaka</groupId>
-            <artifactId>ddd-common</artifactId>
+            <artifactId>ddd-core</artifactId>
         </dependency>
         <dependency>
             <groupId>cc.mikaka</groupId>

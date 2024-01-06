@@ -7,10 +7,9 @@
         <groupId>cc.mikaka</groupId>
         <artifactId>ddd</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>ddd-dao</artifactId>
+    <artifactId>ddd-core</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -20,17 +19,17 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.mybatis.spring.boot</groupId>
-            <artifactId>mybatis-spring-boot-starter</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.itfsw</groupId>
-            <artifactId>mybatis-generator-plugin</artifactId>
+            <groupId>cc.mikaka</groupId>
+            <artifactId>ddd-common</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.mybatis.generator</groupId>
-            <artifactId>mybatis-generator-maven-plugin</artifactId>
+            <groupId>cc.mikaka</groupId>
+            <artifactId>ddd-dao</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
         </dependency>
     </dependencies>
+
 </project>

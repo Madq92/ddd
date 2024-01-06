@@ -26,7 +26,11 @@ RPC的client的实现,此Module为非必须,与ddd-client同时出现
 
 ##### ddd-service
 
-核心服务层，各个领域对外提供的接口，ddd-client-impl和ddd-web的请求都汇聚于此
+业务服务层，各个领域对外提供的接口，ddd-client-impl和ddd-web的请求都汇聚于此
+
+##### ddd-core
+
+领域核心层
 
 ##### ddd-integration
 

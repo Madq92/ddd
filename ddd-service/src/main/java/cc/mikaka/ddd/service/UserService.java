@@ -17,7 +17,7 @@ public interface UserService {
      * @param request
      * @return
      */
-    UserDTO queryById(UserIdRequest request);
+    UserDTO getById(UserIdRequest request);
 
     /**
      * 批量查询
@@ -50,7 +50,7 @@ public interface UserService {
      * @param request
      * @return
      */
-    Void modify(ModifyUserRequest request);
+    Void edit(ModifyUserRequest request);
 
     /**
      * 删除用户

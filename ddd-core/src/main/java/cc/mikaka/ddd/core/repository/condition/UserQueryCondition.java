@@ -1,4 +1,4 @@
-package cc.mikaka.ddd.repository.condition;
+package cc.mikaka.ddd.core.repository.condition;
 
 import lombok.Data;
 

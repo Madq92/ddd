@@ -31,6 +31,22 @@ public enum ActionType {
      * 编辑
      */
     EDIT("EDIT", "编辑"),
+
+    /**
+     * 删除
+     */
+    DELETE("DELETE", "删除"),
+
+    /**
+     * 启用
+     */
+    ENABLE("ENABLE", "启用"),
+
+    /**
+     * 停用
+     */
+    DISABLE("DISABLE", "停用"),
+
     /**
      * 重试
      */

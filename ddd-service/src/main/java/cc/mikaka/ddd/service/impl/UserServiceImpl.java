@@ -6,8 +6,10 @@ import cc.mikaka.ddd.bean.request.user.CreateUserRequest;
 import cc.mikaka.ddd.bean.request.user.ModifyUserRequest;
 import cc.mikaka.ddd.bean.request.user.UserIdRequest;
 import cc.mikaka.ddd.bean.result.PageList;
+import cc.mikaka.ddd.common.enums.ActionType;
+import cc.mikaka.ddd.common.enums.BizType;
 import cc.mikaka.ddd.service.UserService;
-import cc.mikaka.ddd.service.base.BaseBizService;
+import cc.mikaka.ddd.service.BaseBizService;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -16,10 +18,10 @@ import java.util.List;
 public class UserServiceImpl extends BaseBizService implements UserService {
 
     @Override
-    public UserDTO queryById(UserIdRequest request) {
+    public UserDTO getById(UserIdRequest request) {
         String userId = request.getUserId();
 
-        UserDTO userDTO= new UserDTO();
+        UserDTO userDTO = new UserDTO();
         userDTO.setUserId(userId);
         return userDTO;
     }
@@ -36,27 +38,27 @@ public class UserServiceImpl extends BaseBizService implements UserService {
 
     @Override
     public String create(CreateUserRequest request) {
-        return null;
+        return execute(request, BizType.USER, ActionType.CREATE);
     }
 
     @Override
-    public Void modify(ModifyUserRequest request) {
-        return null;
+    public Void edit(ModifyUserRequest request) {
+        return execute(request, BizType.USER, ActionType.EDIT);
     }
 
     @Override
     public Void delete(UserIdRequest request) {
-        return null;
+        return execute(request, BizType.USER, ActionType.DELETE);
     }
 
     @Override
     public Void enable(UserIdRequest request) {
-        return null;
+        return execute(request, BizType.USER, ActionType.ENABLE);
     }
 
     @Override
     public Void disable(UserIdRequest request) {
-        return null;
+        return execute(request, BizType.USER, ActionType.DISABLE);
     }
 
 

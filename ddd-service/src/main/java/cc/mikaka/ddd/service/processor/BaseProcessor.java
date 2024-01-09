@@ -1,4 +1,4 @@
-package cc.mikaka.ddd.processor;
+package cc.mikaka.ddd.service.processor;
 
 import cc.mikaka.ddd.common.enums.ActionType;
 import cc.mikaka.ddd.common.enums.BizType;

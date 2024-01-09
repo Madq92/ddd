@@ -2,21 +2,30 @@ package cc.mikaka.ddd.bean.result;
 
 
 import cc.mikaka.ddd.bean.ToString;
+import lombok.Data;
 
 import java.util.List;
 
 
 /**
- * 批量数据
+ * 分页数据
  */
+@Data
 public class PageList<T> extends ToString {
-
-    private static final long serialVersionUID = 8683452581122892181L;
-
     /**
-     * 总记录数
+     * 总数
      */
     private int totalSize;
+
+    /**
+     * 当前页
+     */
+    private int pageIndex;
+
+    /**
+     * 每页数量
+     */
+    private int pageSize;
 
     /**
      * 数据
@@ -31,26 +40,7 @@ public class PageList<T> extends ToString {
         this.values = values;
     }
 
-    /**
-     * 创建分页数据
-     */
     public static <T> PageList<T> createPageData(List<T> values, int totalSize) {
         return new PageList<T>(values, totalSize);
-    }
-
-    public int getTotalSize() {
-        return totalSize;
-    }
-
-    public void setTotalSize(int totalSize) {
-        this.totalSize = totalSize;
-    }
-
-    public List<T> getValues() {
-        return values;
-    }
-
-    public void setValues(List<T> values) {
-        this.values = values;
     }
 }

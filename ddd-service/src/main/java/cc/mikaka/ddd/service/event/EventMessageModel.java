@@ -1,4 +1,4 @@
-package cc.mikaka.ddd.event;
+package cc.mikaka.ddd.service.event;
 
 import lombok.Data;
 

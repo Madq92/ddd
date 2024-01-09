@@ -1,4 +1,4 @@
-package cc.mikaka.ddd.processor;
+package cc.mikaka.ddd.service.processor;
 
 import cc.mikaka.ddd.common.constants.PaaSConstants;
 import cc.mikaka.ddd.common.enums.ActionType;
@@ -24,7 +24,7 @@ public class BizProcessorComponent implements ApplicationContextAware {
     /**
      * 领域能力处理器集合
      */
-    private Map<String, BaseProcessor> domainProcessorList = new HashMap<>(64);
+    private final Map<String, BaseProcessor> domainProcessorList = new HashMap<>(64);
 
     public BaseProcessor getProcessor(String key) {
         return domainProcessorList.get(key);

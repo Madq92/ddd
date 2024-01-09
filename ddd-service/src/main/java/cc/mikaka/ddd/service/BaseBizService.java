@@ -10,14 +10,11 @@ import cc.mikaka.ddd.common.error.BizErrorCode;
 import cc.mikaka.ddd.common.exception.BizServiceException;
 import cc.mikaka.ddd.common.exception.BizValidateException;
 import cc.mikaka.ddd.common.util.AssertUtil;
-import cc.mikaka.ddd.processor.BizProcessorComponent;
+import cc.mikaka.ddd.service.processor.BizProcessorComponent;
 import jakarta.annotation.Resource;
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -74,14 +71,6 @@ public class BaseBizService {
         context.setBizType(bizType);
         context.setActionType(actionType);
         context.setInitTimestamp(System.currentTimeMillis());
-        Map<String, Object> extMap = request.getExtMap();
-        if (MapUtils.isNotEmpty(extMap)) {
-            extMap.forEach((k, v) -> {
-                if (Objects.nonNull(k) && Objects.nonNull(v)) {
-                    context.getExtMap().put(k, v);
-                }
-            });
-        }
         ProcessContext.setCommonRequest(context);
     }
 

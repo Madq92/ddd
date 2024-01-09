@@ -5,6 +5,6 @@ import cc.mikaka.ddd.bean.request.BaseRequest;
 import lombok.Data;
 
 @Data
-public class ModifyUserRequest extends BaseRequest {
+public class EditUserRequest extends BaseRequest {
     private UserDTO user;
 }

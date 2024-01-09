@@ -33,8 +33,25 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public void updateStatus(String userId, String status) {
+        UserModel updateModel = new UserModel();
+        updateModel.setUserId(userId);
+        updateModel.setStatus(status);
+        userDAO.updateByPrimaryKeySelective(userCoreConvert.model2Do(updateModel));
+    }
+
+    @Override
     public List<UserModel> queryList(UserQueryCondition condition) {
         return null;
     }
 
+    @Override
+    public List<UserModel> queryPage(UserQueryCondition condition) {
+        return null;
+    }
+
+    @Override
+    public int countByCondition(UserQueryCondition condition) {
+        return 0;
+    }
 }

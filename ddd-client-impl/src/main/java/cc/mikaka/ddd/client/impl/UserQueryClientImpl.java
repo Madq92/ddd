@@ -19,7 +19,7 @@ public class UserQueryClientImpl implements UserQueryClient {
 
     @Override
     public CommonResult<UserDTO> queryById(UserIdRequest request) {
-        return CommonResult.createSucc(userService.queryById(request));
+        return CommonResult.createSucc(userService.getById(request));
     }
 
     @Override

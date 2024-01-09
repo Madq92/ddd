@@ -3,13 +3,52 @@ package cc.mikaka.ddd.service;
 import cc.mikaka.ddd.bean.dto.UserDTO;
 import cc.mikaka.ddd.bean.request.user.BatchQueryUserRequest;
 import cc.mikaka.ddd.bean.request.user.CreateUserRequest;
-import cc.mikaka.ddd.bean.request.user.ModifyUserRequest;
+import cc.mikaka.ddd.bean.request.user.EditUserRequest;
 import cc.mikaka.ddd.bean.request.user.UserIdRequest;
 import cc.mikaka.ddd.bean.result.PageList;
 
 import java.util.List;
 
 public interface UserService {
+    /**
+     * 创建用户
+     *
+     * @param request
+     * @return
+     */
+    String create(CreateUserRequest request);
+
+    /**
+     * 编辑用户
+     *
+     * @param request
+     * @return
+     */
+    Void edit(EditUserRequest request);
+
+    /**
+     * 删除用户
+     *
+     * @param request
+     * @return
+     */
+    Void delete(UserIdRequest request);
+
+    /**
+     * 启用用户
+     *
+     * @param request
+     * @return
+     */
+    Void enable(UserIdRequest request);
+
+    /**
+     * 停用用户
+     *
+     * @param request
+     * @return
+     */
+    Void disable(UserIdRequest request);
 
     /**
      * 单个查询
@@ -36,43 +75,4 @@ public interface UserService {
     PageList<UserDTO> pageQuery(BatchQueryUserRequest request);
 
 
-    /**
-     * 创建用户
-     *
-     * @param request
-     * @return
-     */
-    String create(CreateUserRequest request);
-
-    /**
-     * 编辑用户
-     *
-     * @param request
-     * @return
-     */
-    Void edit(ModifyUserRequest request);
-
-    /**
-     * 删除用户
-     *
-     * @param request
-     * @return
-     */
-    Void delete(UserIdRequest request);
-
-    /**
-     * 启用用户
-     *
-     * @param request
-     * @return
-     */
-    Void enable(UserIdRequest request);
-
-    /**
-     * 停用用户
-     *
-     * @param request
-     * @return
-     */
-    Void disable(UserIdRequest request);
 }

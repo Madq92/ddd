@@ -1,7 +1,7 @@
 package cc.mikaka.ddd.client.service;
 
 import cc.mikaka.ddd.bean.request.user.CreateUserRequest;
-import cc.mikaka.ddd.bean.request.user.ModifyUserRequest;
+import cc.mikaka.ddd.bean.request.user.EditUserRequest;
 import cc.mikaka.ddd.bean.request.user.UserIdRequest;
 import cc.mikaka.ddd.bean.result.CommonResult;
 
@@ -21,7 +21,7 @@ public interface UserManageClient {
      * @param request
      * @return
      */
-    CommonResult<Void> modify(ModifyUserRequest request);
+    CommonResult<Void> modify(EditUserRequest request);
 
     /**
      * 删除用户

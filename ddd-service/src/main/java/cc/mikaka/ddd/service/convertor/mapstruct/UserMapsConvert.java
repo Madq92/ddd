@@ -1,4 +1,4 @@
-package cc.mikaka.ddd.convertor.mapstruct;
+package cc.mikaka.ddd.service.convertor.mapstruct;
 
 import cc.mikaka.ddd.bean.dto.UserDTO;
 import cc.mikaka.ddd.core.model.UserModel;

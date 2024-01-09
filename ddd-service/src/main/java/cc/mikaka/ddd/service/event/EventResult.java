@@ -1,4 +1,4 @@
-package cc.mikaka.ddd.event;
+package cc.mikaka.ddd.service.event;
 
 import cc.mikaka.ddd.common.error.ErrorCode;
 import lombok.Getter;

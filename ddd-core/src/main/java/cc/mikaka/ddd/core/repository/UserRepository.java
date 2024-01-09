@@ -7,12 +7,17 @@ import cc.mikaka.ddd.core.repository.condition.UserQueryCondition;
 import java.util.List;
 
 public interface UserRepository {
-    UserModel queryByUserId(String userId);
-
     void insert(UserModel userModel);
 
     void update(UserModel userModel);
 
+    void updateStatus(String userId, String status);
+
+    UserModel queryByUserId(String userId);
+
     List<UserModel> queryList(UserQueryCondition condition);
 
+    List<UserModel> queryPage(UserQueryCondition condition);
+
+    int countByCondition(UserQueryCondition condition);
 }

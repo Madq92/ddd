@@ -1,4 +1,4 @@
-package cc.mikaka.ddd.event;
+package cc.mikaka.ddd.service.event;
 
 public enum MessageStateEnum {
     /**
@@ -24,12 +24,12 @@ public enum MessageStateEnum {
     /**
      * 类型值
      */
-    private String code;
+    private final String code;
 
     /**
      * 类型名称
      */
-    private String desc;
+    private final String desc;
 
     MessageStateEnum(String code, String desc) {
         this.code = code;

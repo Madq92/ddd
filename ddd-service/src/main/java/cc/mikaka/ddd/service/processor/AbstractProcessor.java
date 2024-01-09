@@ -11,7 +11,6 @@ import cc.mikaka.ddd.service.event.EventMessageModel;
 import cc.mikaka.ddd.service.event.ProcessorEventPublisher;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -81,11 +80,11 @@ public abstract class AbstractProcessor<Model, Request extends BaseRequest, BizR
 
                 if (CollectionUtils.isNotEmpty(eventMessageModelList)) {
                     for (EventMessageModel eventMessageModel : eventMessageModelList) {
-                        if (StringUtils.isBlank(eventMessageModel.getBizType())) {
-                            eventMessageModel.setBizType(this.getBizType().getCode());
+                        if (null == eventMessageModel.getBizType()) {
+                            eventMessageModel.setBizType(this.getBizType());
                         }
-                        if (StringUtils.isBlank(eventMessageModel.getActionType())) {
-                            eventMessageModel.setActionType(this.getActionType().getCode());
+                        if (null == eventMessageModel.getActionType()) {
+                            eventMessageModel.setActionType(this.getActionType());
                         }
 
                         processorEventPublisher.publishEvent(eventMessageModel);

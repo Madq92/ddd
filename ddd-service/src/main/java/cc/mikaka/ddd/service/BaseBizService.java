@@ -1,7 +1,6 @@
 package cc.mikaka.ddd.service;
 
 import cc.mikaka.ddd.bean.request.BaseRequest;
-import cc.mikaka.ddd.common.constants.PaaSConstants;
 import cc.mikaka.ddd.common.context.BaseContext;
 import cc.mikaka.ddd.common.context.ProcessContext;
 import cc.mikaka.ddd.common.enums.ActionType;
@@ -10,6 +9,7 @@ import cc.mikaka.ddd.common.error.BizErrorCode;
 import cc.mikaka.ddd.common.exception.BizServiceException;
 import cc.mikaka.ddd.common.exception.BizValidateException;
 import cc.mikaka.ddd.common.util.AssertUtil;
+import cc.mikaka.ddd.common.util.BizUtil;
 import cc.mikaka.ddd.service.processor.BizProcessorComponent;
 import jakarta.annotation.Resource;
 import lombok.extern.log4j.Log4j2;
@@ -42,7 +42,7 @@ public class BaseBizService {
             baseVerify(request, actionType, bizType);
 
             // 2.获得业务标示号
-            String bizKey = getBizKey(bizType, actionType);
+            String bizKey = BizUtil.getBizKey(bizType, actionType);
 
             // 3.设置业务上下文
             buildBaseContext(request, bizType, actionType);
@@ -72,13 +72,6 @@ public class BaseBizService {
         context.setActionType(actionType);
         context.setInitTimestamp(System.currentTimeMillis());
         ProcessContext.setCommonRequest(context);
-    }
-
-    /**
-     * 获得业务key
-     */
-    private String getBizKey(BizType bizType, ActionType actionType) {
-        return bizType.getCode() + PaaSConstants.SEP_UNDERLINE + actionType.getCode();
     }
 
     /**

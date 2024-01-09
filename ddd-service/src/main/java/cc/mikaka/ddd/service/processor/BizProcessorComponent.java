@@ -1,8 +1,6 @@
 package cc.mikaka.ddd.service.processor;
 
-import cc.mikaka.ddd.common.constants.PaaSConstants;
-import cc.mikaka.ddd.common.enums.ActionType;
-import cc.mikaka.ddd.common.enums.BizType;
+import cc.mikaka.ddd.common.util.BizUtil;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -20,11 +18,11 @@ import java.util.Map;
  */
 @Component
 public class BizProcessorComponent implements ApplicationContextAware {
-    private ApplicationContext applicationContext;
     /**
      * 领域能力处理器集合
      */
     private final Map<String, BaseProcessor> domainProcessorList = new HashMap<>(64);
+    private ApplicationContext applicationContext;
 
     public BaseProcessor getProcessor(String key) {
         return domainProcessorList.get(key);
@@ -39,16 +37,9 @@ public class BizProcessorComponent implements ApplicationContextAware {
                 Assert.notNull(processor, "没有找到业务处理器:" + processorName);
                 Processable processable = AnnotationUtils.findAnnotation(processor.getClass(), Processable.class);
                 Assert.notNull(processable, "没有定义业务处理注解:" + processorName);
-                domainProcessorList.put(getBizKey(processable.bizType(), processable.actionType()), processor);
+                domainProcessorList.put(BizUtil.getBizKey(processable.bizType(), processable.actionType()), processor);
             }
         }
-    }
-
-    /**
-     * 获得业务key
-     */
-    private String getBizKey(BizType bizType, ActionType actionType) {
-        return bizType.getCode() + PaaSConstants.SEP_UNDERLINE + actionType.getCode();
     }
 
     @Override

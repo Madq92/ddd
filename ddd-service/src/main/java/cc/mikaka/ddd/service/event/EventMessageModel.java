@@ -1,5 +1,7 @@
 package cc.mikaka.ddd.service.event;
 
+import cc.mikaka.ddd.common.enums.ActionType;
+import cc.mikaka.ddd.common.enums.BizType;
 import lombok.Data;
 
 import java.util.Date;
@@ -16,12 +18,12 @@ public class EventMessageModel {
     /**
      * message_type-消息类型
      */
-    private String bizType;
+    private BizType bizType;
 
     /**
      * action_type-业务类型
      */
-    private String actionType;
+    private ActionType actionType;
 
     /**
      * 数据

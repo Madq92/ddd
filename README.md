@@ -1,5 +1,20 @@
 # DDD 最佳实践
 
+### TODO
+
+- [ ] 链路requestId传递
+- [ ] 异常设计，全局异常处理
+- [ ] Event事件处理
+- [ ] integration层demo
+- [ ] dao层mybatis-generate插件
+- [ ] 唯一序列号生成数据库版本
+- [ ] 分布式锁实现服务
+- [ ] 文档补充
+    - [x] 项目结构
+    - [ ] service层设计
+    - [ ] processor设计
+    - [ ] 事件设计，包含一致性
+
 ### 项目结构
 
 ![项目结构.png](doc%2F%E9%A1%B9%E7%9B%AE%E7%BB%93%E6%9E%84.png)

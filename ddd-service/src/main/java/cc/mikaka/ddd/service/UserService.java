@@ -24,7 +24,7 @@ public interface UserService {
      * @param request
      * @return
      */
-    Void edit(EditUserRequest request);
+    Boolean edit(EditUserRequest request);
 
     /**
      * 删除用户
@@ -32,7 +32,7 @@ public interface UserService {
      * @param request
      * @return
      */
-    Void delete(UserIdRequest request);
+    Boolean delete(UserIdRequest request);
 
     /**
      * 启用用户
@@ -40,7 +40,7 @@ public interface UserService {
      * @param request
      * @return
      */
-    Void enable(UserIdRequest request);
+    Boolean enable(UserIdRequest request);
 
     /**
      * 停用用户
@@ -48,7 +48,7 @@ public interface UserService {
      * @param request
      * @return
      */
-    Void disable(UserIdRequest request);
+    Boolean disable(UserIdRequest request);
 
     /**
      * 单个查询

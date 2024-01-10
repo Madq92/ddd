@@ -14,8 +14,10 @@ import cc.mikaka.ddd.core.model.UserModel;
 import cc.mikaka.ddd.core.repository.UserRepository;
 import cc.mikaka.ddd.core.repository.condition.UserQueryCondition;
 import cc.mikaka.ddd.service.convertor.UserConvert;
+import cc.mikaka.ddd.service.event.EventMessageModel;
 import cc.mikaka.ddd.service.processor.AbstractProcessor;
 import cc.mikaka.ddd.service.processor.Processable;
+import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -66,5 +68,12 @@ public class UserCreateProcessor extends AbstractProcessor<UserModel, CreateUser
     @Override
     protected List<BaseLockInfo> getLockKey(UserModel userModel, ParamContext paramContext) {
         return null;
+    }
+
+    @Override
+    protected List<EventMessageModel> buryEventPoints(UserModel userModel, ParamContext paramContext) {
+        EventMessageModel eventMessageModel = new EventMessageModel();
+        eventMessageModel.setBaseEventModel(userModel);
+        return Lists.newArrayList(eventMessageModel);
     }
 }

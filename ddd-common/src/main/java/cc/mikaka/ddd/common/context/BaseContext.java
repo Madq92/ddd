@@ -17,6 +17,7 @@ public class BaseContext {
     private ActionType actionType;
     private BizType bizType;
     private String bizSource;
+    private String requestId;
     private ConcurrentMap<String, Object> extMap = Maps.newConcurrentMap();
     /**
      * 上下文初始化时间

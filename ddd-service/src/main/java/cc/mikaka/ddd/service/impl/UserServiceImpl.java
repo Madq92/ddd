@@ -34,22 +34,22 @@ public class UserServiceImpl extends BaseBizService implements UserService {
     }
 
     @Override
-    public Void edit(EditUserRequest request) {
+    public Boolean edit(EditUserRequest request) {
         return execute(request, BizType.USER, ActionType.EDIT);
     }
 
     @Override
-    public Void delete(UserIdRequest request) {
+    public Boolean delete(UserIdRequest request) {
         return execute(request, BizType.USER, ActionType.DELETE);
     }
 
     @Override
-    public Void enable(UserIdRequest request) {
+    public Boolean enable(UserIdRequest request) {
         return execute(request, BizType.USER, ActionType.ENABLE);
     }
 
     @Override
-    public Void disable(UserIdRequest request) {
+    public Boolean disable(UserIdRequest request) {
         return execute(request, BizType.USER, ActionType.DISABLE);
     }
 

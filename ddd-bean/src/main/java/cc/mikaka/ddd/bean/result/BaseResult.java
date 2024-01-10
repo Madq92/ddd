@@ -1,11 +1,6 @@
 package cc.mikaka.ddd.bean.result;
 
 import cc.mikaka.ddd.bean.ToString;
-import cc.mikaka.ddd.bean.enums.BaseResultExtEnum;
-
-
-import java.util.HashMap;
-import java.util.Map;
 
 abstract public class BaseResult extends ToString {
 
@@ -16,7 +11,6 @@ abstract public class BaseResult extends ToString {
 
     /**
      * 业务处理结果（错误码）
-     *
      */
     private String errorCode;
 
@@ -25,7 +19,6 @@ abstract public class BaseResult extends ToString {
      */
     private String errorDesc;
 
-    private Map<String, String> extMap;
 
     public boolean isSuccess() {
         return success;
@@ -49,31 +42,5 @@ abstract public class BaseResult extends ToString {
 
     public void setErrorDesc(String errorDesc) {
         this.errorDesc = errorDesc;
-    }
-
-    public Map<String, String> getExtMap() {
-        return extMap;
-    }
-
-    public void setExtMap(Map<String, String> extMap) {
-        this.extMap = extMap;
-    }
-
-    public void putExt(String key, String value) {
-        if (extMap == null) {
-            extMap = new HashMap<String, String>();
-        }
-        BaseResultExtEnum extEnum = BaseResultExtEnum.getTypeByKey(key);
-        if (extEnum == null) {
-            return;
-        }
-        extMap.put(key, value);
-    }
-
-    public String getExtByKey(String key) {
-        if (extMap == null) {
-            return null;
-        }
-        return extMap.get(key);
     }
 }

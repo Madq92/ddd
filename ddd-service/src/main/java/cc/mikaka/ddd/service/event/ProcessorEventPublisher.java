@@ -3,6 +3,7 @@ package cc.mikaka.ddd.service.event;
 import cc.mikaka.ddd.common.sequence.SequenceIdEnum;
 import cc.mikaka.ddd.common.sequence.SequenceService;
 import com.google.common.collect.Lists;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -12,6 +13,7 @@ import java.util.List;
 /**
  * 事件发布器
  */
+@Log4j2
 @Component
 public class ProcessorEventPublisher {
     @Autowired
@@ -29,6 +31,7 @@ public class ProcessorEventPublisher {
         //TODO 异步逻辑处理
         List<EventMessageHandle> asyncHandle = Lists.newArrayList();
         for (EventMessageHandle handle : handles) {
+            log.info("-->调用业务事件，当前handle={}", handle.getClass().getSimpleName());
             if (handle instanceof AbstractSyncEventHandle) {
                 //同步事件
                 dispatcherSyncEvent(eventData, (AbstractSyncEventHandle) handle);

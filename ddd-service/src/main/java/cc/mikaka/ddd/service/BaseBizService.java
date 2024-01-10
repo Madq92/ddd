@@ -33,7 +33,6 @@ public class BaseBizService {
      * 执行业务调用
      */
     protected final <BizData> BizData execute(BaseRequest request, BizType bizType, ActionType actionType) {
-        log.info("==>执行processor业务调用.");
         try {
             if (StringUtils.isBlank(request.getRequestId())) {
                 request.setRequestId(UUID.randomUUID().toString());
@@ -52,7 +51,7 @@ public class BaseBizService {
             AssertUtil.notNull(processor, BizErrorCode.PROCESSOR_NOT_EXIST);
             processor.setActionType(actionType);
             processor.setBizType(bizType);
-            log.info("当前processor={}", processor.getClass().getSimpleName());
+            log.info("====>执行业务调用，当前processor = {} ,requestId = {}", processor.getClass().getSimpleName(), request.getRequestId());
             return (BizData) processor.doProcessor(request);
         } catch (BizValidateException e) {
             log.error("业务校验异常。业务类型：{}，操作类型：{}", bizType, actionType, e);
@@ -63,6 +62,7 @@ public class BaseBizService {
         } finally {
             // 5.线程结束，清理ThreadLocal里的属性
             ProcessContext.cleanThreadLocal();
+            log.info("<====执行业务调用结束");
         }
     }
 
@@ -71,6 +71,7 @@ public class BaseBizService {
         context.setBizType(bizType);
         context.setActionType(actionType);
         context.setInitTimestamp(System.currentTimeMillis());
+        context.setRequestId(request.getRequestId());
         ProcessContext.setCommonRequest(context);
     }
 

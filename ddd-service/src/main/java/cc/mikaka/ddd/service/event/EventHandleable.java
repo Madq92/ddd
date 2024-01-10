@@ -5,6 +5,7 @@ import cc.mikaka.ddd.common.enums.BizType;
 
 import java.lang.annotation.*;
 
+@Repeatable(EventHandleables.class)
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented

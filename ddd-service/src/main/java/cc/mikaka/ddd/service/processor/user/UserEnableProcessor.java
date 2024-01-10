@@ -10,6 +10,7 @@ import cc.mikaka.ddd.common.lock.UserLockInfo;
 import cc.mikaka.ddd.common.util.AssertUtil;
 import cc.mikaka.ddd.core.model.UserModel;
 import cc.mikaka.ddd.core.repository.UserRepository;
+import cc.mikaka.ddd.service.event.EventMessageModel;
 import cc.mikaka.ddd.service.processor.AbstractProcessor;
 import cc.mikaka.ddd.service.processor.Processable;
 import com.google.common.collect.Lists;
@@ -20,15 +21,15 @@ import java.util.List;
 
 @Component
 @Processable(bizType = BizType.USER, actionType = ActionType.ENABLE)
-public class UserEnableProcessor extends AbstractProcessor<String, UserIdRequest, String> {
+public class UserEnableProcessor extends AbstractProcessor<String, UserIdRequest, Boolean> {
 
     @Autowired
     UserRepository userRepository;
 
     @Override
-    protected String doBusiness(String userId, ParamContext paramContext) {
+    protected Boolean doBusiness(String userId, ParamContext paramContext) {
         userRepository.updateStatus(userId, StateEnum.ONLINE.getDesc());
-        return userId;
+        return true;
     }
 
     @Override
@@ -52,5 +53,12 @@ public class UserEnableProcessor extends AbstractProcessor<String, UserIdRequest
         UserLockInfo userLockInfo = new UserLockInfo();
         userLockInfo.setUserId(userId);
         return Lists.newArrayList(userLockInfo);
+    }
+
+    @Override
+    protected List<EventMessageModel> buryEventPoints(String userId, ParamContext paramContext) {
+        EventMessageModel eventMessageModel = new EventMessageModel();
+        eventMessageModel.setBaseEventModel(userId);
+        return Lists.newArrayList(eventMessageModel);
     }
 }

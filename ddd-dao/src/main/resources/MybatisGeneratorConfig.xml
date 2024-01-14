@@ -37,9 +37,12 @@
         <!--        </plugin>-->
         <!-- 自定义插件 -->
         <!--        <plugin type="cc.mikaka.used.car.plugins.DefaultExtPlugin"/>-->
-        <commentGenerator type="cc.mikaka.shujun.auction.plugins.CustomCommentGenerator">
-            <property name="suppressDate" value="true"/>
-            <property name="suppressAllComments" value="true"/>
+
+        <!--        <plugin type="com.alsc.pos.dish.plugins.DefaultExtPlugin"/>-->
+
+        <plugin type="org.mybatis.generator.plugins.ToStringPlugin"/>
+
+        <commentGenerator type="cc.mikaka.ddd.plugins.CustomCommentGenerator">
         </commentGenerator>
 
         <!--数据库连接信息-->
@@ -63,8 +66,12 @@
         <javaClientGenerator type="XMLMAPPER" targetPackage="cc.mikaka.shujun.auction.dao"
                              targetProject="auction-dao/src/main/java"/>
 
-
-        <table tableName="user" domainObjectName="UserDO" mapperName="UserDAO"/>
+        <table tableName="user" domainObjectName="UserDO" mapperName="UserDAO">
+            <property name="bizId" value="user_id"/>
+            <property name="listByConditionFlag" value="true"/>
+            <property name="pageListByConditionFlag" value="true"/>
+            <property name="countByConditionFlag" value="true"/>
+        </table>
 
     </context>
 </generatorConfiguration>

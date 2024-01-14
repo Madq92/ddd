@@ -5,9 +5,9 @@ package cc.mikaka.ddd.common.lock;
  * */
 public enum DistributeLockEnum {
     /**
-     * PAAS
+     * 业务锁
      */
-    PAAS("PAAS", "PAAS", "paas层"),
+    BIZ("BIZ", "BIZ", "业务锁"),
 
     /**
      * 事件锁
@@ -25,16 +25,16 @@ public enum DistributeLockEnum {
     /**
      * 业务类型
      */
-    private String id;
+    private final String id;
 
     /**
      * code
      */
-    private String code;
+    private final String code;
     /**
      * 描述
      */
-    private String desc;
+    private final String desc;
 
     DistributeLockEnum(String biz, String code, String desc) {
         this.id = biz;

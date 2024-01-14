@@ -5,11 +5,8 @@ import cc.mikaka.ddd.common.error.ErrorCode;
 
 /**
  * 功能描述: 业务校验异常
- *
  */
 public class BizValidateException extends RuntimeException {
-
-    private static final long serialVersionUID = -1532585207732638732L;
     /**
      * 业务逻辑内部错误码
      */

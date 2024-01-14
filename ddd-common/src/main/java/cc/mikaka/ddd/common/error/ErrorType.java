@@ -1,5 +1,6 @@
 package cc.mikaka.ddd.common.error;
 
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -10,8 +11,8 @@ import org.apache.commons.lang3.StringUtils;
  * 1 业务错误
  * 2 第三方错误
  * </PRE>
- *
  **/
+@Getter
 public enum ErrorType {
 
     /**
@@ -39,15 +40,6 @@ public enum ErrorType {
     }
 
     /**
-     * Getter method for property <tt>type</tt>.
-     *
-     * @return property value of type
-     */
-    public String getType() {
-        return type;
-    }
-
-    /**
      * Method getByType.
      *
      * @param type String
@@ -60,5 +52,14 @@ public enum ErrorType {
             }
         }
         return null;
+    }
+
+    /**
+     * Getter method for property <tt>type</tt>.
+     *
+     * @return property value of type
+     */
+    public String getType() {
+        return type;
     }
 }

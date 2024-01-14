@@ -14,6 +14,7 @@ import cc.mikaka.ddd.core.repository.condition.UserQueryCondition;
 import cc.mikaka.ddd.service.BaseBizService;
 import cc.mikaka.ddd.service.UserService;
 import cc.mikaka.ddd.service.convertor.UserConvert;
+import cc.mikaka.ddd.service.processor.user.UserCreateProcessor;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,26 +31,41 @@ public class UserServiceImpl extends BaseBizService implements UserService {
 
     @Override
     public String create(CreateUserRequest request) {
+        /**
+         * @see UserCreateProcessor
+         */
         return execute(request, BizType.USER, ActionType.CREATE);
     }
 
     @Override
     public Boolean edit(EditUserRequest request) {
+        /**
+         * @see UserEditProcessor
+         */
         return execute(request, BizType.USER, ActionType.EDIT);
     }
 
     @Override
     public Boolean delete(UserIdRequest request) {
+        /**
+         * @see UserDeleteProcessor
+         */
         return execute(request, BizType.USER, ActionType.DELETE);
     }
 
     @Override
     public Boolean enable(UserIdRequest request) {
+        /**
+         * @see UserEditProcessor
+         */
         return execute(request, BizType.USER, ActionType.ENABLE);
     }
 
     @Override
     public Boolean disable(UserIdRequest request) {
+        /**
+         * @see UserDisableProcessor
+         */
         return execute(request, BizType.USER, ActionType.DISABLE);
     }
 

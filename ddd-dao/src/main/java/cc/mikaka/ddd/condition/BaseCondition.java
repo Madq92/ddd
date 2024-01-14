@@ -1,9 +1,9 @@
-package cc.mikaka.ddd.core.repository.condition;
+package cc.mikaka.ddd.condition;
 
 import lombok.Data;
 
 @Data
-public class BasePageCondition {
+public class BaseCondition {
     private Integer pageIndex;
     private Integer pageSize;
 }

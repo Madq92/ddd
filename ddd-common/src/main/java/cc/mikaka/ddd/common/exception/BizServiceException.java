@@ -3,12 +3,15 @@ package cc.mikaka.ddd.common.exception;
 import cc.mikaka.ddd.common.error.BizErrorCode;
 import cc.mikaka.ddd.common.error.ErrorCode;
 
+/**
+ * 内部服务异常
+ */
 public class BizServiceException extends RuntimeException {
 
     /**
      * 业务逻辑内部错误码
      */
-    private ErrorCode errorCode;
+    private final ErrorCode errorCode;
 
     /**
      * 子错误码

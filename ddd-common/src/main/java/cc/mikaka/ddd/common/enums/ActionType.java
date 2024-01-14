@@ -1,6 +1,8 @@
 package cc.mikaka.ddd.common.enums;
 
+import lombok.Getter;
 
+@Getter
 public enum ActionType {
     /**
      * 查询(单个)
@@ -54,10 +56,10 @@ public enum ActionType {
     // add other enum code
     ;
 
-    private String code;
+    private final String code;
 
 
-    private String desc;
+    private final String desc;
 
     ActionType(String code, String desc) {
         this.code = code;
@@ -81,13 +83,5 @@ public enum ActionType {
             }
         }
         return null;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public String getDesc() {
-        return desc;
     }
 }

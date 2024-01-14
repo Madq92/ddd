@@ -1,5 +1,8 @@
 package cc.mikaka.ddd.common.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum BizType {
     /**
      * 业务配置
@@ -14,12 +17,12 @@ public enum BizType {
     /**
      * code
      */
-    private String code;
+    private final String code;
 
     /**
      * desc
      */
-    private String desc;
+    private final String desc;
 
     BizType(String code, String desc) {
         this.code = code;
@@ -43,13 +46,5 @@ public enum BizType {
             }
         }
         return null;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public String getDesc() {
-        return desc;
     }
 }

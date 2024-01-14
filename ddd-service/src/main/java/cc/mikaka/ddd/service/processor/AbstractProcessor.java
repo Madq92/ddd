@@ -171,7 +171,7 @@ public abstract class AbstractProcessor<Model, Request extends BaseRequest, BizR
         lockList.stream().filter(Objects::nonNull).forEach(lock -> {
             String key = lock.toLockKey();
             log.info("请求加锁key: {}", key);
-            boolean success = distributeLockService.lock(DistributeLockEnum.PAAS, key,
+            boolean success = distributeLockService.lock(DistributeLockEnum.BIZ, key,
                     request.getRequestId(), lock.getFetchLockMillTime(), lock.getLockedMillTime());
             if (!success) {
                 log.error("请求加锁lock失败:{}", lock);

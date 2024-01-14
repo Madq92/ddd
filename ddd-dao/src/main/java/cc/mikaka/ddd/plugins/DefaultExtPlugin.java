@@ -1,8 +1,9 @@
 package cc.mikaka.ddd.plugins;
 
 
+import cc.mikaka.ddd.condition.BaseCondition;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.mybatis.generator.api.IntrospectedColumn;
@@ -13,21 +14,15 @@ import org.mybatis.generator.api.dom.xml.*;
 import org.mybatis.generator.config.MergeConstants;
 import org.mybatis.generator.internal.util.StringUtility;
 import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
 
-import java.lang.reflect.Field;
 import java.sql.JDBCType;
-import java.sql.Types;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class DefaultExtPlugin extends PluginAdapter {
-
-    private static final String SHARDING_COLMN = "merchant_id";
-
-    private static final String NOT_SHARDING_COLUMN_FLAG = "notShardingFlag";
-
-    private static final String LOGIC_TABLE_ID = "logicTableId";
+    private static final String TABLE_BIZ_ID = "bizId";
     private static final String BATCH_INSERT_FLAG = "batchInsertFlag";
     private static final String BATCH_UPDATE_FLAG = "batchUpdateFlag";
     private static final String BATCH_UPDATE_STATE_FLAG = "batchUpdateStateFlag";
@@ -63,57 +58,50 @@ public class DefaultExtPlugin extends PluginAdapter {
     }
 
     /**
-     * 生成 逻辑主键ID和商户ID的参数
+     * 生成业务主键ID的参数
      *
      * @param method
      * @param interfaze
      * @param introspectedTable
      */
     private void generatorParam(Method method, Interface interfaze, IntrospectedTable introspectedTable) {
-        String logicTableId = (String) introspectedTable.getTableConfiguration().getProperties().get(LOGIC_TABLE_ID);
-        Assert.notNull(logicTableId, LOGIC_TABLE_ID + " is null");
+        String tableBizId = (String) introspectedTable.getTableConfiguration().getProperties().get(TABLE_BIZ_ID);
+        if (StringUtils.isEmpty(tableBizId)) {
+            return;
+        }
 
-        String logicFieldId = convertCamel(logicTableId);
+        String bizFieldId = convertCamel(tableBizId);
 
         FullyQualifiedJavaType fullyQualifiedJavaType = new FullyQualifiedJavaType(Param.class.getName());
         interfaze.addImportedType(fullyQualifiedJavaType);
 
         method.getParameters().remove(0);
 
-        FullyQualifiedJavaType type = introspectedTable.getColumn(logicTableId).getFullyQualifiedJavaType();
-        Parameter parameter1 = new Parameter(type, logicFieldId);
-        parameter1.addAnnotation("@Param(\"" + logicFieldId + "\")");
+        FullyQualifiedJavaType type = introspectedTable.getColumn(tableBizId).getFullyQualifiedJavaType();
+        Parameter parameter1 = new Parameter(type, bizFieldId);
+        parameter1.addAnnotation("@Param(\"" + bizFieldId + "\")");
         method.addParameter(parameter1);
-
-        if (methodFlag(introspectedTable, NOT_SHARDING_COLUMN_FLAG)) {
-            return;
-        }
-        Parameter parameter2 = new Parameter(FullyQualifiedJavaType.getStringInstance(), convertCamel(SHARDING_COLMN));
-        parameter2.addAnnotation("@Param(\"" + convertCamel(SHARDING_COLMN) + "\")");
-        method.addParameter(parameter2);
-
     }
 
     /**
-     * 生成 逻辑主键ID和商户ID的sql
+     * 生成业务主键ID的sql
      *
      * @param element
      * @param introspectedTable
      */
     private void generatorSQLParam(XmlElement element, IntrospectedTable introspectedTable) {
-        String logicTableId = (String) introspectedTable.getTableConfiguration().getProperties().get(LOGIC_TABLE_ID);
-        Assert.notNull(logicTableId, LOGIC_TABLE_ID + " is null");
-
-        String logicFieldId = convertCamel(logicTableId);
-        String jdbcType = introspectedTable.getColumn(logicTableId).getJdbcTypeName();
-        String content = "where " + logicTableId + " = #{" + logicFieldId + ",jdbcType=" + jdbcType + "}";
-        if (!methodFlag(introspectedTable, NOT_SHARDING_COLUMN_FLAG)) {
-            content += " and " + SHARDING_COLMN + " = #{" + convertCamel(SHARDING_COLMN) + ",jdbcType=VARCHAR}";
+        String tableBizId = (String) introspectedTable.getTableConfiguration().getProperties().get(TABLE_BIZ_ID);
+        if (StringUtils.isEmpty(tableBizId)) {
+            return;
         }
+
+        String bizFieldId = convertCamel(tableBizId);
+        String jdbcType = introspectedTable.getColumn(bizFieldId).getJdbcTypeName();
+        String content = "where " + tableBizId + " = #{" + bizFieldId + ",jdbcType=" + jdbcType + "}";
+
         TextElement textElement = new TextElement(content);
         element.getElements().removeIf(element1 -> (element1 instanceof TextElement) && ((TextElement) element1).getContent().contains("where "));
         element.getElements().add(textElement);
-
     }
 
     @Override
@@ -170,69 +158,12 @@ public class DefaultExtPlugin extends PluginAdapter {
     @Override
     public boolean sqlMapUpdateByPrimaryKeySelectiveElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
         generatorSQLParam(element, introspectedTable);
-
-        String logicTableId = (String) introspectedTable.getTableConfiguration().getProperties().get(LOGIC_TABLE_ID);
-
-        Set<String> intColumns = Sets.newHashSet();
-        introspectedTable.getAllColumns().forEach(introspectedColumn -> {
-            if (introspectedColumn.getJdbcType() == Types.INTEGER || introspectedColumn.getJdbcType() == Types.BIGINT) {
-                intColumns.add(introspectedColumn.getActualColumnName());
-            }
-        });
-
-        List<String> excludeUpdateColumns = Arrays.asList(logicTableId, SHARDING_COLMN, "org_id", "env");
-
-        List<String> excludeColumns = introspectedTable.getAllColumns().stream().filter(c -> excludeUpdateColumns.contains(c.getActualColumnName())).map(IntrospectedColumn::getActualColumnName).collect(Collectors.toList());
-
-        List<Element> elements = element.getElements();
-        for (Element e : elements) {
-            if (e instanceof XmlElement) {
-
-                Iterator<Element> iterator = ((XmlElement) e).getElements().iterator();
-                while (iterator.hasNext()) {
-                    Element innerE = iterator.next();
-                    if (innerE instanceof XmlElement) {
-                        List<Element> elementList = ((XmlElement) innerE).getElements();
-                        for (int i = 0, size = elementList.size(); i < size; i++) {
-                            TextElement textElement = (TextElement) elementList.get(i);
-                            String column = textElement.getContent().split(" = ")[0];
-                            if (intColumns.contains(column)) {
-                                Attribute attribute = ((XmlElement) innerE).getAttributes().get(i);
-                                setAttributeValue(attribute, attribute.getValue().replace("null", "null"));
-                            }
-                        }
-
-                        boolean find = ((XmlElement) innerE).getElements().stream().anyMatch(x -> {
-                            for (String col : excludeColumns) {
-                                if (((TextElement) x).getContent().trim().startsWith(col + " =")) {
-                                    return true;
-                                }
-                            }
-                            return false;
-                        });
-                        if (find) {
-                            iterator.remove();
-                        }
-                    }
-                }
-            }
-        }
         return true;
-    }
-
-    public void setAttributeValue(Attribute attribute, String value) {
-        Field field = null;
-        try {
-            field = Attribute.class.getDeclaredField("value");
-            field.setAccessible(true);
-            field.set(attribute, value);
-        } catch (IllegalAccessException | NoSuchFieldException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
     public boolean sqlMapUpdateByPrimaryKeyWithoutBLOBsElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
+        generatorSQLParam(element, introspectedTable);
         return false;
     }
 
@@ -283,15 +214,15 @@ public class DefaultExtPlugin extends PluginAdapter {
         if (methodFlag(introspectedTable, LIST_BY_KEYS_FLAG)) {
             clientGenerateListByKeyIds(interfaze, topLevelClass, introspectedTable);
         }
-//        if (methodFlag(introspectedTable, LIST_BY_CONDITION_FLAG)) {
-//            clientGenerateListByCondition(interfaze, topLevelClass, introspectedTable);
-//        }
-//        if (methodFlag(introspectedTable, PAGE_LIST_BY_CONDITION_FLAG)) {
-//            clientGeneratePageListByCondition(interfaze, topLevelClass, introspectedTable);
-//        }
-//        if (methodFlag(introspectedTable, COUNT_BY_CONDITION_FLAG)) {
-//            clientGenerateCountByCondition(interfaze, topLevelClass, introspectedTable);
-//        }
+        if (methodFlag(introspectedTable, LIST_BY_CONDITION_FLAG)) {
+            clientGenerateListByCondition(interfaze, topLevelClass, introspectedTable);
+        }
+        if (methodFlag(introspectedTable, PAGE_LIST_BY_CONDITION_FLAG)) {
+            clientGeneratePageListByCondition(interfaze, topLevelClass, introspectedTable);
+        }
+        if (methodFlag(introspectedTable, COUNT_BY_CONDITION_FLAG)) {
+            clientGenerateCountByCondition(interfaze, topLevelClass, introspectedTable);
+        }
         return true;
     }
 
@@ -351,23 +282,18 @@ public class DefaultExtPlugin extends PluginAdapter {
         interfaze.addImportedType(new FullyQualifiedJavaType(List.class.getName()));
         Method method = new Method("batchUpdateState");
 
-        String logicTableId = (String) introspectedTable.getTableConfiguration().getProperties().get(LOGIC_TABLE_ID);
-        String logicFieldId = convertCamel(logicTableId);
+        String bizTableId = (String) introspectedTable.getTableConfiguration().getProperties().get(TABLE_BIZ_ID);
+        String bizFieldId = convertCamel(bizTableId);
 
-        String javaType = introspectedTable.getColumn(logicTableId).getFullyQualifiedJavaType().getShortName();
-        Parameter parameter = new Parameter(new FullyQualifiedJavaType("List<" + javaType + ">"), logicFieldId + "List");
-        parameter.addAnnotation("@Param(\"" + logicFieldId + "List" + "\")");
+        String javaType = introspectedTable.getColumn(bizTableId).getFullyQualifiedJavaType().getShortName();
+        Parameter parameter = new Parameter(new FullyQualifiedJavaType("List<" + javaType + ">"), bizFieldId + "List");
+        parameter.addAnnotation("@Param(\"" + bizFieldId + "List" + "\")");
         method.addParameter(parameter);
 
         Parameter parameter2 = new Parameter(FullyQualifiedJavaType.getStringInstance(), "state");
         parameter2.addAnnotation("@Param(\"state\")");
         method.addParameter(parameter2);
 
-        if (!methodFlag(introspectedTable, NOT_SHARDING_COLUMN_FLAG)) {
-            Parameter parameter3 = new Parameter(FullyQualifiedJavaType.getStringInstance(), convertCamel(SHARDING_COLMN));
-            parameter3.addAnnotation("@Param(\"" + convertCamel(SHARDING_COLMN) + "\")");
-            method.addParameter(parameter3);
-        }
 
         method.addJavaDocLine("/**");
         method.addJavaDocLine(" * This method was generated by MyBatis Generator.");
@@ -381,22 +307,16 @@ public class DefaultExtPlugin extends PluginAdapter {
      * 批量删除Java
      */
     private void clientGenerateBatchDetele(Interface interfaze, TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
-        String logicTableId = (String) introspectedTable.getTableConfiguration().getProperties().get(LOGIC_TABLE_ID);
-        String logicFieldId = convertCamel(logicTableId);
+        String bizTableId = (String) introspectedTable.getTableConfiguration().getProperties().get(TABLE_BIZ_ID);
+        String bizFieldId = convertCamel(bizTableId);
 
         interfaze.addImportedType(new FullyQualifiedJavaType(List.class.getName()));
         Method method = new Method("batchDelete");
 
-        String javaType = introspectedTable.getColumn(logicTableId).getFullyQualifiedJavaType().getShortName();
-        Parameter parameter1 = new Parameter(new FullyQualifiedJavaType("List<" + javaType + ">"), logicFieldId + "List");
-        parameter1.addAnnotation("@Param(\"" + logicFieldId + "List\")");
+        String javaType = introspectedTable.getColumn(bizTableId).getFullyQualifiedJavaType().getShortName();
+        Parameter parameter1 = new Parameter(new FullyQualifiedJavaType("List<" + javaType + ">"), bizFieldId + "List");
+        parameter1.addAnnotation("@Param(\"" + bizFieldId + "List\")");
         method.addParameter(parameter1);
-
-        if (!methodFlag(introspectedTable, NOT_SHARDING_COLUMN_FLAG)) {
-            Parameter parameter2 = new Parameter(FullyQualifiedJavaType.getStringInstance(), convertCamel(SHARDING_COLMN));
-            parameter2.addAnnotation("@Param(\"" + convertCamel(SHARDING_COLMN) + "\")");
-            method.addParameter(parameter2);
-        }
 
         method.addJavaDocLine("/**");
         method.addJavaDocLine(" * This method was generated by MyBatis Generator.");
@@ -407,8 +327,8 @@ public class DefaultExtPlugin extends PluginAdapter {
     }
 
     private void clientGenerateListByKeyIds(Interface interfaze, TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
-        String logicTableId = (String) introspectedTable.getTableConfiguration().getProperties().get(LOGIC_TABLE_ID);
-        String logicFieldId = convertCamel(logicTableId);
+        String bizTableId = (String) introspectedTable.getTableConfiguration().getProperties().get(TABLE_BIZ_ID);
+        String bizFieldId = convertCamel(bizTableId);
 
         String targetPackage = introspectedTable.getContext().getJavaModelGeneratorConfiguration().getTargetPackage();
         String doName = introspectedTable.getFullyQualifiedTable().getDomainObjectName();
@@ -416,19 +336,13 @@ public class DefaultExtPlugin extends PluginAdapter {
         interfaze.addImportedType(new FullyQualifiedJavaType(targetPackage + "." + doName));
 
         interfaze.addImportedType(new FullyQualifiedJavaType(List.class.getName()));
-        String mFieldId = logicFieldId.replaceFirst(".", logicFieldId.substring(0, 1).toUpperCase());
+        String mFieldId = bizFieldId.replaceFirst(".", bizFieldId.substring(0, 1).toUpperCase());
         Method method = new Method("listBy" + mFieldId + "s");
 
-        String javaType = introspectedTable.getColumn(logicTableId).getFullyQualifiedJavaType().getShortName();
-        Parameter parameter1 = new Parameter(new FullyQualifiedJavaType("List<" + javaType + ">"), logicFieldId + "List");
-        parameter1.addAnnotation("@Param(\"" + logicFieldId + "List\")");
+        String javaType = introspectedTable.getColumn(bizTableId).getFullyQualifiedJavaType().getShortName();
+        Parameter parameter1 = new Parameter(new FullyQualifiedJavaType("List<" + javaType + ">"), bizFieldId + "List");
+        parameter1.addAnnotation("@Param(\"" + bizFieldId + "List\")");
         method.addParameter(parameter1);
-
-        if (!methodFlag(introspectedTable, NOT_SHARDING_COLUMN_FLAG)) {
-            Parameter parameter2 = new Parameter(FullyQualifiedJavaType.getStringInstance(), convertCamel(SHARDING_COLMN));
-            parameter2.addAnnotation("@Param(\"" + convertCamel(SHARDING_COLMN) + "\")");
-            method.addParameter(parameter2);
-        }
 
         method.setReturnType(new FullyQualifiedJavaType("List<" + doName + ">"));
 
@@ -439,74 +353,74 @@ public class DefaultExtPlugin extends PluginAdapter {
         interfaze.addMethod(method);
     }
 
-//    private void clientGenerateListByCondition(Interface interfaze, TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
-//
-//        String targetPackage = introspectedTable.getContext().getJavaModelGeneratorConfiguration().getTargetPackage();
-//        String doName = introspectedTable.getFullyQualifiedTable().getDomainObjectName();
-//        interfaze.addImportedType(new FullyQualifiedJavaType(List.class.getName()));
-//        interfaze.addImportedType(new FullyQualifiedJavaType(targetPackage + "." + doName));
-//
-//        interfaze.addImportedType(new FullyQualifiedJavaType(BaseCondition.class.getName()));
-//        Method method = new Method("listByCondition");
-//
-//        Parameter parameter = new Parameter(new FullyQualifiedJavaType("BaseCondition"), "baseCondition");
-//        method.addParameter(parameter);
-//
-//        method.setReturnType(new FullyQualifiedJavaType("List<" + doName + ">"));
-//
-//        method.addJavaDocLine("/**");
-//        method.addJavaDocLine(" * This method was generated by MyBatis Generator.");
-//        method.addJavaDocLine(" * 【merchantId 必输】");
-//        addJavadocTagWithoutDateTime(method, true);
-//        method.addJavaDocLine(" */");
-//        interfaze.addMethod(method);
-//    }
-//
-//    private void clientGeneratePageListByCondition(Interface interfaze, TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
-//
-//        String targetPackage = introspectedTable.getContext().getJavaModelGeneratorConfiguration().getTargetPackage();
-//        String doName = introspectedTable.getFullyQualifiedTable().getDomainObjectName();
-//        interfaze.addImportedType(new FullyQualifiedJavaType(List.class.getName()));
-//        interfaze.addImportedType(new FullyQualifiedJavaType(targetPackage + "." + doName));
-//
-//        interfaze.addImportedType(new FullyQualifiedJavaType(BaseCondition.class.getName()));
-//        Method method = new Method("pageListByCondition");
-//
-//        Parameter parameter = new Parameter(new FullyQualifiedJavaType("BaseCondition"), "baseCondition");
-//        method.addParameter(parameter);
-//
-//        method.setReturnType(new FullyQualifiedJavaType("List<" + doName + ">"));
-//
-//        method.addJavaDocLine("/**");
-//        method.addJavaDocLine(" * This method was generated by MyBatis Generator.");
-//        method.addJavaDocLine(" * 【merchantId 必输】");
-//        addJavadocTagWithoutDateTime(method, true);
-//        method.addJavaDocLine(" */");
-//        interfaze.addMethod(method);
-//    }
-//
-//    private void clientGenerateCountByCondition(Interface interfaze, TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
-//
-//        String targetPackage = introspectedTable.getContext().getJavaModelGeneratorConfiguration().getTargetPackage();
-//        String doName = introspectedTable.getFullyQualifiedTable().getDomainObjectName();
-//        interfaze.addImportedType(new FullyQualifiedJavaType(List.class.getName()));
-//        interfaze.addImportedType(new FullyQualifiedJavaType(targetPackage + "." + doName));
-//
-//        interfaze.addImportedType(new FullyQualifiedJavaType(BaseCondition.class.getName()));
-//        Method method = new Method("countByCondition");
-//
-//        Parameter parameter = new Parameter(new FullyQualifiedJavaType("BaseCondition"), "baseCondition");
-//        method.addParameter(parameter);
-//
-//        method.setReturnType(FullyQualifiedJavaType.getIntInstance());
-//
-//        method.addJavaDocLine("/**");
-//        method.addJavaDocLine(" * This method was generated by MyBatis Generator.");
-//        method.addJavaDocLine(" * 【merchantId 必输】");
-//        addJavadocTagWithoutDateTime(method, true);
-//        method.addJavaDocLine(" */");
-//        interfaze.addMethod(method);
-//    }
+    private void clientGenerateListByCondition(Interface interfaze, TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+
+        String targetPackage = introspectedTable.getContext().getJavaModelGeneratorConfiguration().getTargetPackage();
+        String doName = introspectedTable.getFullyQualifiedTable().getDomainObjectName();
+        interfaze.addImportedType(new FullyQualifiedJavaType(List.class.getName()));
+        interfaze.addImportedType(new FullyQualifiedJavaType(targetPackage + "." + doName));
+
+        interfaze.addImportedType(new FullyQualifiedJavaType(Condition.class.getName()));
+        Method method = new Method("listByCondition");
+
+        Parameter parameter = new Parameter(new FullyQualifiedJavaType("BaseCondition"), "baseCondition");
+        method.addParameter(parameter);
+
+        method.setReturnType(new FullyQualifiedJavaType("List<" + doName + ">"));
+
+        method.addJavaDocLine("/**");
+        method.addJavaDocLine(" * This method was generated by MyBatis Generator.");
+        method.addJavaDocLine(" * 【merchantId 必输】");
+        addJavadocTagWithoutDateTime(method, true);
+        method.addJavaDocLine(" */");
+        interfaze.addMethod(method);
+    }
+
+    private void clientGeneratePageListByCondition(Interface interfaze, TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+
+        String targetPackage = introspectedTable.getContext().getJavaModelGeneratorConfiguration().getTargetPackage();
+        String doName = introspectedTable.getFullyQualifiedTable().getDomainObjectName();
+        interfaze.addImportedType(new FullyQualifiedJavaType(List.class.getName()));
+        interfaze.addImportedType(new FullyQualifiedJavaType(targetPackage + "." + doName));
+
+        interfaze.addImportedType(new FullyQualifiedJavaType(BaseCondition.class.getName()));
+        Method method = new Method("pageListByCondition");
+
+        Parameter parameter = new Parameter(new FullyQualifiedJavaType("BaseCondition"), "baseCondition");
+        method.addParameter(parameter);
+
+        method.setReturnType(new FullyQualifiedJavaType("List<" + doName + ">"));
+
+        method.addJavaDocLine("/**");
+        method.addJavaDocLine(" * This method was generated by MyBatis Generator.");
+        method.addJavaDocLine(" * 【merchantId 必输】");
+        addJavadocTagWithoutDateTime(method, true);
+        method.addJavaDocLine(" */");
+        interfaze.addMethod(method);
+    }
+
+    private void clientGenerateCountByCondition(Interface interfaze, TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+
+        String targetPackage = introspectedTable.getContext().getJavaModelGeneratorConfiguration().getTargetPackage();
+        String doName = introspectedTable.getFullyQualifiedTable().getDomainObjectName();
+        interfaze.addImportedType(new FullyQualifiedJavaType(List.class.getName()));
+        interfaze.addImportedType(new FullyQualifiedJavaType(targetPackage + "." + doName));
+
+        interfaze.addImportedType(new FullyQualifiedJavaType(BaseCondition.class.getName()));
+        Method method = new Method("countByCondition");
+
+        Parameter parameter = new Parameter(new FullyQualifiedJavaType("BaseCondition"), "baseCondition");
+        method.addParameter(parameter);
+
+        method.setReturnType(FullyQualifiedJavaType.getIntInstance());
+
+        method.addJavaDocLine("/**");
+        method.addJavaDocLine(" * This method was generated by MyBatis Generator.");
+        method.addJavaDocLine(" * 【merchantId 必输】");
+        addJavadocTagWithoutDateTime(method, true);
+        method.addJavaDocLine(" */");
+        interfaze.addMethod(method);
+    }
 
     @Override
     public boolean sqlMapDocumentGenerated(Document document, IntrospectedTable introspectedTable) {
@@ -673,21 +587,19 @@ public class DefaultExtPlugin extends PluginAdapter {
 
         xmlElement.addElement(new TextElement("set state = #{state,jdbcType=VARCHAR}"));
 
-        String logicTableId = (String) introspectedTable.getTableConfiguration().getProperties().get(LOGIC_TABLE_ID);
-        Assert.notNull(logicTableId, LOGIC_TABLE_ID + " is null");
+        String bizTableId = (String) introspectedTable.getTableConfiguration().getProperties().get(TABLE_BIZ_ID);
+        Assert.notNull(bizTableId, TABLE_BIZ_ID + " is null");
 
-        String logicFieldId = convertCamel(logicTableId);
+        String logicFieldId = convertCamel(bizTableId);
 
         String content = "where ";
-        if (!methodFlag(introspectedTable, NOT_SHARDING_COLUMN_FLAG)) {
-            content += SHARDING_COLMN + " = #{" + convertCamel(SHARDING_COLMN) + ",jdbcType=VARCHAR} and ";
-        }
-        content += logicTableId + " in";
+
+        content += bizTableId + " in";
         TextElement textElement = new TextElement(content);
 
         xmlElement.addElement(textElement);
 
-        String jdbcType = introspectedTable.getColumn(logicTableId).getJdbcTypeName();
+        String jdbcType = introspectedTable.getColumn(bizTableId).getJdbcTypeName();
 
         TextElement forx01 = new TextElement("  <foreach collection=\"" + logicFieldId + "List\" item=\"item\"  index=\"index\"\n" + " open=\"(\"  separator=\",\" close=\")\">\n        #{item,jdbcType=" + jdbcType + "}\n" + "      </foreach>");
         xmlElement.addElement(forx01);
@@ -712,21 +624,19 @@ public class DefaultExtPlugin extends PluginAdapter {
 
         Assert.notNull(temp, "delete cannot be null");
 
-        String logicTableId = (String) introspectedTable.getTableConfiguration().getProperties().get(LOGIC_TABLE_ID);
-        Assert.notNull(logicTableId, LOGIC_TABLE_ID + " is null");
-        String logicFieldId = convertCamel(logicTableId);
+        String bizTableId = (String) introspectedTable.getTableConfiguration().getProperties().get(TABLE_BIZ_ID);
+        Assert.notNull(bizTableId, TABLE_BIZ_ID + " is null");
+        String logicFieldId = convertCamel(bizTableId);
 
-        String jdbcType = introspectedTable.getColumn(logicTableId).getJdbcTypeName();
+        String jdbcType = introspectedTable.getColumn(bizTableId).getJdbcTypeName();
 
         List<Element> elements = temp.getElements();
         for (int i = 0, elementsSize = elements.size(); i < elementsSize; i++) {
             Element e = elements.get(i);
             if (((TextElement) e).getContent().trim().startsWith("where")) {
                 String content = "where ";
-                if (!methodFlag(introspectedTable, NOT_SHARDING_COLUMN_FLAG)) {
-                    content += SHARDING_COLMN + " = #{" + convertCamel(SHARDING_COLMN) + ",jdbcType=VARCHAR} and ";
-                }
-                content += logicTableId + " in";
+
+                content += bizTableId + " in";
 
                 TextElement textElement = new TextElement(content);
 
@@ -744,9 +654,9 @@ public class DefaultExtPlugin extends PluginAdapter {
 
     private void sqlMapGenerateListByKeys(Document document, IntrospectedTable introspectedTable) {
 
-        String logicTableId = (String) introspectedTable.getTableConfiguration().getProperties().get(LOGIC_TABLE_ID);
-        String logicFieldId = convertCamel(logicTableId);
-        String mFieldId = logicFieldId.replaceFirst(".", logicFieldId.substring(0, 1).toUpperCase());
+        String bizTableId = (String) introspectedTable.getTableConfiguration().getProperties().get(TABLE_BIZ_ID);
+        String bizFieldId = convertCamel(bizTableId);
+        String mFieldId = bizFieldId.replaceFirst(".", bizFieldId.substring(0, 1).toUpperCase());
 
         XmlElement xmlElement = new XmlElement("select");
         xmlElement.addAttribute(new Attribute("id", "listBy" + mFieldId + "s"));
@@ -764,22 +674,20 @@ public class DefaultExtPlugin extends PluginAdapter {
 
         Assert.notNull(temp, "select cannot be null");
 
-        String jdbcType = introspectedTable.getColumn(logicTableId).getJdbcTypeName();
+        String jdbcType = introspectedTable.getColumn(bizTableId).getJdbcTypeName();
 
         List<Element> elements = temp.getElements();
         for (int i = 0, elementsSize = elements.size(); i < elementsSize; i++) {
             Element e = elements.get(i);
             if (e instanceof TextElement && ((TextElement) e).getContent().trim().startsWith("where")) {
                 String content = "where ";
-                if (!methodFlag(introspectedTable, NOT_SHARDING_COLUMN_FLAG)) {
-                    content += SHARDING_COLMN + " = #{" + convertCamel(SHARDING_COLMN) + ",jdbcType=VARCHAR} and ";
-                }
-                content += logicTableId + " in";
+
+                content += bizTableId + " in";
                 TextElement textElement = new TextElement(content);
 
                 xmlElement.addElement(textElement);
 
-                TextElement forx01 = new TextElement("  <foreach collection=\"" + logicFieldId + "List\" item=\"item\"  index=\"index\"\n" + " open=\"(\"  separator=\",\" close=\")\">\n        #{item,jdbcType=" + jdbcType + "}\n" + "      </foreach>");
+                TextElement forx01 = new TextElement("  <foreach collection=\"" + bizFieldId + "List\" item=\"item\"  index=\"index\"\n" + " open=\"(\"  separator=\",\" close=\")\">\n        #{item,jdbcType=" + jdbcType + "}\n" + "      </foreach>");
                 xmlElement.addElement(forx01);
             } else {
                 xmlElement.addElement(e);
@@ -798,9 +706,7 @@ public class DefaultExtPlugin extends PluginAdapter {
         addComment(xmlElement);
 
         String content = "where ";
-        if (!methodFlag(introspectedTable, NOT_SHARDING_COLUMN_FLAG)) {
-            content += SHARDING_COLMN + " = #{" + convertCamel(SHARDING_COLMN) + ",jdbcType=VARCHAR}";
-        }
+
         TextElement textElement = new TextElement(content);
         xmlElement.addElement(textElement);
 

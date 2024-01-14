@@ -41,6 +41,12 @@ public class BizEventHandleComponent implements ApplicationContextAware {
                 var handle = applicationContext.getBean(eventMessageHandleName, EventMessageHandle.class);
                 Assert.notNull(handle, "没有找到事件处理Handle:" + eventMessageHandleName);
 
+                if (!(handle instanceof AbstractAsyncMqEventHandle
+                        || handle instanceof AbstractAsyncEventHandle
+                        || handle instanceof AbstractSyncEventHandle)) {
+                    Assert.isTrue(false, "事件Handle应继承AbstractAsyncMqEventHandle、AbstractAsyncEventHandle、AbstractSyncEventHandle，HandlName = " + eventMessageHandleName);
+                }
+
                 List<String> bizKeyList = Lists.newArrayList();
                 EventHandleables eventHandleables = AnnotationUtils.findAnnotation(handle.getClass(), EventHandleables.class);
                 if (null != eventHandleables) {

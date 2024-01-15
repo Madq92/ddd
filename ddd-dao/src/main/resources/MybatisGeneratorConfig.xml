@@ -11,60 +11,35 @@
         <property name="beginningDelimiter" value="`"/>
         <property name="endingDelimiter" value="`"/>
 
-        <!-- 自动生成toString方法 -->
-        <!--        <plugin type="org.mybatis.generator.plugins.ToStringPlugin"/>-->
-        <!-- 自动生成equals方法和hashcode方法 -->
-        <!--        <plugin type="org.mybatis.generator.plugins.EqualsHashCodePlugin"/>-->
+        <plugin type="cc.mikaka.ddd.plugins.LombokPlugin"/>
+        <plugin type="cc.mikaka.ddd.plugins.DefaultExtPlugin"/>
 
-        <!--        &lt;!&ndash; 非官方插件 https://github.com/itfsw/mybatis-generator-plugin &ndash;&gt;-->
-        <!--        &lt;!&ndash; 查询单条数据插件 &ndash;&gt;-->
-        <!--        <plugin type="com.itfsw.mybatis.generator.plugins.SelectOneByExamplePlugin"/>-->
-        <!--        &lt;!&ndash; 查询结果选择性返回插件 &ndash;&gt;-->
-        <!--        <plugin type="com.itfsw.mybatis.generator.plugins.SelectSelectivePlugin"/>-->
-        <!--        &lt;!&ndash; Example Criteria 增强插件 &ndash;&gt;-->
-        <!--        <plugin type="com.itfsw.mybatis.generator.plugins.ExampleEnhancedPlugin"/>-->
-        <!--        &lt;!&ndash; 数据Model属性对应Column获取插件 &ndash;&gt;-->
-        <!--        <plugin type="com.itfsw.mybatis.generator.plugins.ModelColumnPlugin"/>-->
-        <!-- 逻辑删除插件 -->
-        <!--        <plugin type="com.itfsw.mybatis.generator.plugins.LogicalDeletePlugin">-->
-        <!--            &lt;!&ndash; 这里配置的是全局逻辑删除列和逻辑删除值，当然在table中配置的值会覆盖该全局配置 &ndash;&gt;-->
-        <!--            &lt;!&ndash; 逻辑删除列类型只能为数字、字符串或者布尔类型 &ndash;&gt;-->
-        <!--            <property name="logicalDeleteColumn" value="deleted"/>-->
-        <!--            &lt;!&ndash; 逻辑删除-已删除值 &ndash;&gt;-->
-        <!--            <property name="logicalDeleteValue" value="1"/>-->
-        <!--            &lt;!&ndash; 逻辑删除-未删除值 &ndash;&gt;-->
-        <!--            <property name="logicalUnDeleteValue" value="0"/>-->
-        <!--        </plugin>-->
-        <!-- 自定义插件 -->
-        <!--        <plugin type="cc.mikaka.used.car.plugins.DefaultExtPlugin"/>-->
-
-        <!--        <plugin type="com.alsc.pos.dish.plugins.DefaultExtPlugin"/>-->
-
-        <plugin type="org.mybatis.generator.plugins.ToStringPlugin"/>
-
-        <commentGenerator type="cc.mikaka.ddd.plugins.CustomCommentGenerator">
+        <commentGenerator>
+            <property name="suppressDate" value="true"/>
+            <!--            <property name="suppressAllComments" value="true"/>-->
         </commentGenerator>
+
 
         <!--数据库连接信息-->
         <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
-                        connectionURL="jdbc:mysql://localhost:3306/auction?useUnicode=true&amp;characterEncoding=utf-8&amp;allowMultiQueries=true"
+                        connectionURL="jdbc:mysql://localhost:3306/ddd?useUnicode=true&amp;characterEncoding=utf-8&amp;allowMultiQueries=true"
                         userId="root"
                         password="123456">
             <property name="useInformationSchema" value="true"/>
             <property name="nullCatalogMeansCurrent" value="true"/>
         </jdbcConnection>
         <javaTypeResolver>
-            <!--            <property name="useJSR310Types" value="true"/>-->
+            <property name="useJSR310Types" value="true"/>
+            <property name="forceBigDecimals" value="false"/>
         </javaTypeResolver>
 
-        <javaModelGenerator targetPackage="cc.mikaka.shujun.auction.dataobject"
-                            targetProject="auction-dao/src/main/java">
-            <property name="rootClass" value="cc.mikaka.shujun.auction.dataobject.BaseDO"/>
+        <javaModelGenerator targetPackage="cc.mikaka.ddd.dao" targetProject="ddd-dao/src/main/java">
+            <property name="rootClass" value="cc.mikaka.ddd.dao.BaseDO"/>
         </javaModelGenerator>
 
-        <sqlMapGenerator targetPackage="mapper" targetProject="auction-dao/src/main/resources"/>
-        <javaClientGenerator type="XMLMAPPER" targetPackage="cc.mikaka.shujun.auction.dao"
-                             targetProject="auction-dao/src/main/java"/>
+        <sqlMapGenerator targetPackage="mapper" targetProject="ddd-dao/src/main/resources"/>
+        <javaClientGenerator type="XMLMAPPER" targetPackage="cc.mikaka.ddd.dataobject"
+                             targetProject="ddd-dao/src/main/java"/>
 
         <table tableName="user" domainObjectName="UserDO" mapperName="UserDAO">
             <property name="bizId" value="user_id"/>

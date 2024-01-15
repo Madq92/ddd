@@ -96,7 +96,7 @@ public class DefaultExtPlugin extends PluginAdapter {
         }
 
         String bizFieldId = convertCamel(tableBizId);
-        String jdbcType = introspectedTable.getColumn(bizFieldId).getJdbcTypeName();
+        String jdbcType = introspectedTable.getColumn(tableBizId).getJdbcTypeName();
         String content = "where " + tableBizId + " = #{" + bizFieldId + ",jdbcType=" + jdbcType + "}";
 
         TextElement textElement = new TextElement(content);

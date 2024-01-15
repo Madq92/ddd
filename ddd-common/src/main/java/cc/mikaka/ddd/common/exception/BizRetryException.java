@@ -2,10 +2,12 @@ package cc.mikaka.ddd.common.exception;
 
 
 import cc.mikaka.ddd.common.error.ErrorCode;
+import lombok.Data;
 
 /**
  * 业务重试的异常
  */
+@Data
 public class BizRetryException extends RuntimeException {
     /**
      * 业务逻辑内部错误码
@@ -26,13 +28,4 @@ public class BizRetryException extends RuntimeException {
         this.errorCode = errorCode;
         this.errorDesc = errorDesc;
     }
-
-    public ErrorCode getErrorCode() {
-        return errorCode;
-    }
-
-    public void setErrorCode(ErrorCode errorCode) {
-        this.errorCode = errorCode;
-    }
-
 }

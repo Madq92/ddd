@@ -2,7 +2,16 @@
 
 基于 DDD 思想的开发框架模板，便于快速启动一个项目，减少前期重复造轮子。
 
-### TODO
+## 目录
+
+- [TODO事项](#TODO)
+- [快速启动](#快速启动)
+- [项目结构](#项目结构)
+    - [Service层](#Service层)
+    - [领域事件](#领域事件)
+    - [Dao层](#Dao层)
+
+## TODO
 
 - [ ] 链路 requestId 传递
 - [ ] 异常设计，全局异常处理
@@ -11,12 +20,25 @@
 - [ ] dao 层 mybatis-generate 插件
 - [ ] 唯一序列号生成数据库版本
 - [ ] 分布式锁实现服务
+- [ ] 项目脚手架
 - [ ] 文档补充
     - [x] 项目结构
     - [ ] service 层设计，processor 设计
     - [ ] 事件设计，包含一致性
 
-### 项目结构
+## 快速启动
+
+``` bash
+#项目基于java17
+cd ddd
+mvn clean install
+java -jar ddd-start-0.0.1-SNAPSHOT.jar
+#能顺利编译并运行成功即可
+
+#目前暂无项目脚手架，需要自行修改项目名称、module、包名、相关pom文件
+```
+
+## 项目结构
 
 ![项目结构.png](doc%2F%E9%A1%B9%E7%9B%AE%E7%BB%93%E6%9E%84.png)
 
@@ -43,7 +65,7 @@
 
 Processor 业务处理完成后可触发领域事件，一个 Processor 可以发送多个领域事件，一个领域事件可以被多个事件 Handle 处理
 
-领域事件可分三类：同步事件，异步事件，MQ事件
+领域事件可分三类：同步事件，异步事件
 
 事件 handle 采用注解自动注册到 BizEventHandleComponent
 
@@ -59,11 +81,6 @@ AbstractSyncEventHandle
 
 由统一的线程池处理，当业务事务执行完成后执行异步事件 handle，业务和事件 handle 无法满足一致性要求，目前是通过重试达成最终一致性，参考
 AbstractAsyncEventHandle
-
-##### MQ事件
-
-由统一的线程池处理，当业务事务执行完成后执行 MQ 事件 handle，业务和事件 handle 无法满足一致性要求，目前是通过重试达成最终一致性，参考
-AbstractAsyncMqEventHandle
 
 ### Dao层
 

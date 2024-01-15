@@ -76,6 +76,11 @@ public enum BizErrorCode implements ErrorCode {
      */
     BIZ_ERROR("BIZ_ERROR", "业务异常", ErrorType.BIZ),
 
+    /**
+     * 事件异常
+     */
+    EVENT_ERROR("EVENT_ERROR", "事件异常", ErrorType.BIZ),
+
 
     /**
      * 网络超时异常
@@ -88,15 +93,15 @@ public enum BizErrorCode implements ErrorCode {
     /**
      * code
      */
-    private String code;
+    private final String code;
     /**
      * desc
      */
-    private String desc;
+    private final String desc;
     /**
      * type
      */
-    private ErrorType errorType;
+    private final ErrorType errorType;
 
 
     BizErrorCode(String code, String desc, ErrorType type) {

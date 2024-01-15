@@ -4,10 +4,6 @@ import cc.mikaka.ddd.common.enums.ActionType;
 import cc.mikaka.ddd.common.enums.BizType;
 import lombok.Data;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
 @Data
 public class EventMessageModel {
     /**
@@ -42,37 +38,8 @@ public class EventMessageModel {
     private String state;
 
     /**
-     * 事件类型
-     */
-    private String eventMessageType;
-
-    /**
-     * 扩展信息
-     */
-    private Map<String, Object> extInfo = new HashMap<>();
-
-    /**
-     * 临时信息，不持久化
-     */
-    private Map<String, Object> tempInfo = new HashMap<>();
-
-    /**
      * retry_times-重试次数
      */
     private Integer retryTimes;
-
-    /**
-     * 创建时间
-     */
-    private Date gmtCreate;
-
-    /**
-     * 获取事件的消息模型(同步消息才有效)
-     *
-     * @return EventDataModel
-     */
-    public Object getBaseEventModelIfSync() {
-        return this.baseEventModel;
-    }
 }
 

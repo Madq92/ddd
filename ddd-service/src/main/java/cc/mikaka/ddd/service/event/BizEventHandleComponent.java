@@ -26,10 +26,10 @@ public class BizEventHandleComponent implements ApplicationContextAware {
     private ApplicationContext applicationContext;
 
     public List<EventMessageHandle> getHandle(BizType bizType, ActionType actionType) {
-        return domainEventHandleList.get(BizUtil.getBizKey(bizType, actionType));
+        return this.getHandle(BizUtil.getBizKey(bizType, actionType));
     }
 
-    public List<EventMessageHandle> getHandle(String bizKey) {
+    private List<EventMessageHandle> getHandle(String bizKey) {
         return domainEventHandleList.get(bizKey);
     }
 
@@ -41,8 +41,7 @@ public class BizEventHandleComponent implements ApplicationContextAware {
                 var handle = applicationContext.getBean(eventMessageHandleName, EventMessageHandle.class);
                 Assert.notNull(handle, "没有找到事件处理Handle:" + eventMessageHandleName);
 
-                if (!(handle instanceof AbstractAsyncMqEventHandle
-                        || handle instanceof AbstractAsyncEventHandle
+                if (!(handle instanceof AbstractAsyncEventHandle
                         || handle instanceof AbstractSyncEventHandle)) {
                     Assert.isTrue(false, "事件Handle应继承AbstractAsyncMqEventHandle、AbstractAsyncEventHandle、AbstractSyncEventHandle，HandlName = " + eventMessageHandleName);
                 }

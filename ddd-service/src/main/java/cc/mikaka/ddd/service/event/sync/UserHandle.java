@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 @Component
 @EventHandleable(bizType = BizType.USER, actionType = ActionType.CREATE)
 public class UserHandle extends AbstractSyncEventHandle {
-
     @Override
     public EventResult doHandle(EventMessageModel eventMessageModel) {
         log.info("UserHandle doHandle : {}", eventMessageModel);

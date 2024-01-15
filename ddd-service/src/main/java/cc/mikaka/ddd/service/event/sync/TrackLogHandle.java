@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 @EventHandleable(bizType = BizType.USER, actionType = ActionType.DISABLE)
 @EventHandleable(bizType = BizType.USER, actionType = ActionType.ENABLE)
 public class TrackLogHandle extends AbstractSyncEventHandle {
-
     @Override
     public EventResult doHandle(EventMessageModel eventMessageModel) {
         log.info("TrackLogHandle doHandle : {}", eventMessageModel);

@@ -2,10 +2,12 @@ package cc.mikaka.ddd.common.exception;
 
 
 import cc.mikaka.ddd.common.error.ErrorCode;
+import lombok.Data;
 
 /**
  * 功能描述: 业务校验异常
  */
+@Data
 public class BizValidateException extends RuntimeException {
     /**
      * 业务逻辑内部错误码
@@ -45,21 +47,5 @@ public class BizValidateException extends RuntimeException {
 
     public BizValidateException(Throwable t) {
         super(t);
-    }
-
-    public ErrorCode getErrorCode() {
-        return errorCode;
-    }
-
-    public void setErrorCode(ErrorCode errorCode) {
-        this.errorCode = errorCode;
-    }
-
-    public String getErrorDesc() {
-        return errorDesc;
-    }
-
-    public void setErrorDesc(String errorDesc) {
-        this.errorDesc = errorDesc;
     }
 }

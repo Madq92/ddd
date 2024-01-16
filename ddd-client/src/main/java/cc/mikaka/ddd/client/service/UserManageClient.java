@@ -21,7 +21,7 @@ public interface UserManageClient {
      * @param request
      * @return
      */
-    CommonResult<Void> modify(EditUserRequest request);
+    CommonResult<Boolean> edit(EditUserRequest request);
 
     /**
      * 删除用户
@@ -29,7 +29,7 @@ public interface UserManageClient {
      * @param request
      * @return
      */
-    CommonResult<Void> delete(UserIdRequest request);
+    CommonResult<Boolean> delete(UserIdRequest request);
 
     /**
      * 启用用户
@@ -37,7 +37,7 @@ public interface UserManageClient {
      * @param request
      * @return
      */
-    CommonResult<Void> enable(UserIdRequest request);
+    CommonResult<Boolean> enable(UserIdRequest request);
 
     /**
      * 停用用户
@@ -45,5 +45,5 @@ public interface UserManageClient {
      * @param request
      * @return
      */
-    CommonResult<Void> disable(UserIdRequest request);
+    CommonResult<Boolean> disable(UserIdRequest request);
 }

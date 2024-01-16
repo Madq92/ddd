@@ -1,5 +1,6 @@
 package cc.mikaka.ddd.core.repository.impl;
 
+import cc.mikaka.ddd.bean.enums.OrderRuleEnum;
 import cc.mikaka.ddd.common.util.AssertUtil;
 import cc.mikaka.ddd.core.convertor.UserCoreConvert;
 import cc.mikaka.ddd.core.model.UserModel;
@@ -104,6 +105,8 @@ public class UserRepositoryImpl implements UserRepository {
         if (CollectionUtils.isNotEmpty(condition.getOrders())) {
             String orderByClause = condition.getOrders().stream().collect(Collectors.joining(" , "));
             example.setOrderByClause(orderByClause);
+        } else {
+            example.setOrderByClause(OrderRuleEnum.ID_DESC.getOrderCase());
         }
 
         return example;

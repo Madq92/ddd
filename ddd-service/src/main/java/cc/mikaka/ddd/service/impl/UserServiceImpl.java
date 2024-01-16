@@ -1,6 +1,7 @@
 package cc.mikaka.ddd.service.impl;
 
 import cc.mikaka.ddd.bean.dto.UserDTO;
+import cc.mikaka.ddd.bean.enums.OrderRuleEnum;
 import cc.mikaka.ddd.bean.request.user.BatchQueryUserRequest;
 import cc.mikaka.ddd.bean.request.user.CreateUserRequest;
 import cc.mikaka.ddd.bean.request.user.EditUserRequest;
@@ -21,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class UserServiceImpl extends BaseBizService implements UserService {
@@ -107,6 +109,10 @@ public class UserServiceImpl extends BaseBizService implements UserService {
 
         condition.setPageIndex(request.getPageIndex());
         condition.setPageSize(request.getPageSize());
+
+        if (CollectionUtils.isNotEmpty(request.getOrderRules())) {
+            condition.setOrders(request.getOrderRules().stream().map(OrderRuleEnum::getOrderCase).collect(Collectors.toList()));
+        }
         return condition;
     }
 }

@@ -16,6 +16,6 @@ public class UserHandle extends AbstractSyncEventHandle {
     @Override
     public EventResult doHandle(EventMessageModel eventMessageModel) {
         log.info("UserHandle doHandle : {}", eventMessageModel);
-        return null;
+        return EventResult.createSuccess();
     }
 }

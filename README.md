@@ -14,10 +14,11 @@
 ## TODO
 
 - [ ] 链路 requestId 传递
-- [ ] 异常设计，全局异常处理
-- [ ] Event 事件处理
+- [x] 异常设计，全局异常处理
+- [x] Event 事件处理
 - [ ] integration 层 demo
-- [ ] dao 层 mybatis-generate 插件
+- [x] 用户管理 demo
+- [x] dao 层 mybatis-generate 插件
 - [ ] 唯一序列号生成数据库版本
 - [ ] 分布式锁实现服务
 - [ ] 项目脚手架
@@ -26,10 +27,31 @@
     - [ ] service 层设计，processor 设计
     - [ ] 事件设计，包含一致性
 
-## 快速启动
+## Quick start
+
+#### 启动项目
 
 ``` bash
-#项目基于java17
+# 1.本地创建数据库表
+
+CREATE TABLE `user` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `user_id` varchar(32) NOT NULL COMMENT '业务主键',
+  `name` varchar(64) DEFAULT NULL COMMENT '名称',
+  `password` varchar(1024) DEFAULT NULL COMMENT '密码',
+  `phone` varchar(64) DEFAULT NULL COMMENT '电话',
+  `avatar` varchar(64) DEFAULT NULL COMMENT '头像',
+  `status` varchar(32) NOT NULL COMMENT '状态',
+  `server_create_time` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '服务器创建时间 : 服务器创建时间',
+  `server_update_time` timestamp(3) NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3) COMMENT '服务器更新时间 : 服务器更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idu_user_id` (`user_id`),
+  KEY `idx_phone` (`phone`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COMMENT='系统用户'
+
+# 2.修改 application.yml 对应的数据库连接配置
+# 3.编译启动项目，项目基于 java17
+
 cd ddd
 mvn clean install
 java -jar ddd-start-0.0.1-SNAPSHOT.jar
@@ -37,6 +59,15 @@ java -jar ddd-start-0.0.1-SNAPSHOT.jar
 
 #目前暂无项目脚手架，需要自行修改项目名称、module、包名、相关pom文件
 ```
+
+### 文档说明
+
+项目自带 swagger
+文档，启动项目后浏览器打开 [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html#/)
+
+![swagger文档.png](doc/swagger-ui.png)
+
+项目以用户管理为示范，实现了用户的创建、编辑、删除、启用、停用、主键查询、列表查询、分页查询接口
 
 ## 项目结构
 

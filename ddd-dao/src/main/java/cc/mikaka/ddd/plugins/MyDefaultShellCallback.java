@@ -11,6 +11,13 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+/**
+ * 生成完后的回调，主要是新旧代买的merge
+ * <p>
+ * TODO 应该按照注解来判断是否merge相应的方法和xml
+ *
+ * @see org.mybatis.generator.config.MergeConstants
+ */
 public class MyDefaultShellCallback extends DefaultShellCallback {
 
 

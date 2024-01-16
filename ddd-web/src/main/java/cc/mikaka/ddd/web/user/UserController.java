@@ -35,8 +35,8 @@ public class UserController {
 
     @Operation(summary = "User列表")
     @GetMapping("/list")
-    public CommonResult<List<UserDTO>> batchQuery(@RequestParam("userIds") @Parameter(description = "用户ID列表") List<String> userIds,
-                                                  @RequestParam("nameLike") @Parameter(description = "用户姓名模糊查询") String nameLike) {
+    public CommonResult<List<UserDTO>> batchQuery(@RequestParam(name = "userIds", required = false) @Parameter(description = "用户ID列表") List<String> userIds,
+                                                  @RequestParam(name = "nameLike", required = false) @Parameter(description = "用户姓名模糊查询") String nameLike) {
         BatchQueryUserRequest request = new BatchQueryUserRequest();
         request.setUserIds(userIds);
         request.setNameLike(nameLike);
@@ -45,10 +45,10 @@ public class UserController {
 
     @Operation(summary = "User分页")
     @GetMapping("/page")
-    public CommonResult<PageList<UserDTO>> pageQuery(@RequestParam("userIds") @Parameter(description = "用户ID列表") List<String> userIds,
-                                                     @RequestParam("userNameLike") @Parameter(description = "用户姓名模糊查询") String nameLike,
-                                                     @RequestParam("pageIndex") @Parameter(description = "分页Index") Integer pageIndex,
-                                                     @RequestParam("pageSize") @Parameter(description = "分页大小") Integer pageSize) {
+    public CommonResult<PageList<UserDTO>> pageQuery(@RequestParam(name = "userIds", required = false) @Parameter(description = "用户ID列表") List<String> userIds,
+                                                     @RequestParam(name = "userNameLike", required = false) @Parameter(description = "用户姓名模糊查询") String nameLike,
+                                                     @RequestParam(name = "pageIndex") @Parameter(description = "分页Index") Integer pageIndex,
+                                                     @RequestParam(name = "pageSize") @Parameter(description = "分页大小") Integer pageSize) {
         BatchQueryUserRequest request = new BatchQueryUserRequest();
         request.setUserIds(userIds);
         request.setNameLike(nameLike);

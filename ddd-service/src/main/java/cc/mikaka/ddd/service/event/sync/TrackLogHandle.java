@@ -20,6 +20,6 @@ public class TrackLogHandle extends AbstractSyncEventHandle {
     @Override
     public EventResult doHandle(EventMessageModel eventMessageModel) {
         log.info("TrackLogHandle doHandle : {}", eventMessageModel);
-        return null;
+        return EventResult.createSuccess();
     }
 }

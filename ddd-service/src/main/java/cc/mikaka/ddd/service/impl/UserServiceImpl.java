@@ -94,7 +94,7 @@ public class UserServiceImpl extends BaseBizService implements UserService {
         }
 
         List<UserModel> userModels = userRepository.queryPage(condition);
-        return PageList.createPageData(userConvert.model2Dtos(userModels), 0);
+        return PageList.createPageData(userConvert.model2Dtos(userModels), count, request);
     }
 
     private UserQueryCondition buildUserQueryCondition(BatchQueryUserRequest request) {

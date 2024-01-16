@@ -12,7 +12,9 @@
         <property name="endingDelimiter" value="`"/>
 
         <plugin type="cc.mikaka.ddd.plugins.LombokPlugin"/>
-        <plugin type="cc.mikaka.ddd.plugins.DefaultExtPlugin"/>
+        <plugin type="cc.mikaka.ddd.plugins.LimitPlugin"/>
+        <plugin type="cc.mikaka.ddd.plugins.SelectOneByExamplePlugin"/>
+        <plugin type="cc.mikaka.ddd.plugins.BizPrimaryKeyPlugin"/>
 
         <commentGenerator>
             <property name="suppressDate" value="true"/>
@@ -42,10 +44,7 @@
                              targetProject="ddd-dao/src/main/java"/>
 
         <table tableName="user" domainObjectName="UserDO" mapperName="UserDAO">
-            <property name="bizId" value="user_id"/>
-            <property name="listByConditionFlag" value="true"/>
-            <property name="pageListByConditionFlag" value="true"/>
-            <property name="countByConditionFlag" value="true"/>
+            <property name="bizPrimaryKey" value="user_id"/>
         </table>
 
     </context>

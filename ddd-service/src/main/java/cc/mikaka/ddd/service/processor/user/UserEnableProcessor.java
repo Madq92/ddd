@@ -28,7 +28,7 @@ public class UserEnableProcessor extends AbstractProcessor<String, UserIdRequest
 
     @Override
     protected Boolean doBusiness(String userId, ParamContext paramContext) {
-        userRepository.updateStatus(userId, StateEnum.ONLINE.getDesc());
+        userRepository.updateStatus(userId, StateEnum.ONLINE.getCode());
         return true;
     }
 

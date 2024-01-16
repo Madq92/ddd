@@ -48,7 +48,7 @@ public class UserEditProcessor extends AbstractProcessor<UserModel, EditUserRequ
         UserDTO user = request.getUser();
         AssertUtil.notNull(user, "用户不能为空");
         AssertUtil.notNull(user.getUserId(), "用户ID不能为空");
-        AssertUtil.notNull(user.getUserName(), "用户名称不能为空");
+        AssertUtil.notNull(user.getName(), "用户名称不能为空");
     }
 
     @Override

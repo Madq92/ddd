@@ -10,9 +10,11 @@ public class UserDTO extends ToString {
     @Schema(title = "用户ID")
     private String userId;
     @Schema(title = "用户Name")
-    private String userName;
-    @Schema(title = "用户年龄")
-    private Integer age;
+    private String name;
+    @Schema(title = "电话")
+    private String phone;
+    @Schema(title = "头像")
+    private String avatar;
     @Schema(title = "用户状态")
     private String status;
 }

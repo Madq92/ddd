@@ -1,17 +1,11 @@
-package cc.mikaka.ddd.bean.request;
+package cc.mikaka.ddd.core.repository.condition;
 
-import cc.mikaka.ddd.bean.enums.OrderRuleEnum;
 import lombok.Data;
 
 import java.util.List;
 
-
-/**
- * 分页请求参数
- */
 @Data
-abstract public class BasePageQueryRequest extends BaseRequest {
-
+public class PageCondition {
     /**
      * 当前请求页码
      */
@@ -25,5 +19,5 @@ abstract public class BasePageQueryRequest extends BaseRequest {
     /**
      * 排序
      */
-    private List<OrderRuleEnum> orderRules;
+    private List<String> orders;
 }

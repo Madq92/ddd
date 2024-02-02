@@ -56,6 +56,9 @@ public class BaseBizService {
         } catch (BizValidateException e) {
             log.error("业务校验异常。业务类型：{}，操作类型：{}", bizType, actionType, e);
             throw new BizValidateException(e.getErrorCode(), e.getErrorDesc());
+        } catch (BizServiceException e) {
+            log.error("业务服务异常。业务类型：{}，操作类型：{}", bizType, actionType, e);
+            throw e;
         } catch (Throwable e) {
             log.error("系统异常。业务类型：{}，操作类型：{}", bizType, actionType, e);
             throw new BizServiceException(BizErrorCode.SYSTEM_ERROR, BizErrorCode.SYSTEM_ERROR.getDesc());

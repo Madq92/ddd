@@ -8,5 +8,5 @@ public interface SequenceService {
     /**
      * 生成唯－序列号
      */
-    public String buildSequenceId(SequenceIdEnum sequenceIdEnum);
+    String buildSequenceId(SequenceIdEnum sequenceIdEnum);
 }

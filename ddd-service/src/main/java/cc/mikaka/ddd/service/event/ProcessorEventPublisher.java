@@ -91,7 +91,7 @@ public class ProcessorEventPublisher {
             EXECUTOR_SERVICE.execute(() -> {
                 boolean locked = false;
                 String messageId = eventData.getMessageId();
-                String requestId = sequenceService.buildSequenceId(null);
+                String requestId = sequenceService.buildSequenceId(SequenceIdEnum.DEFAULT);
                 try {
                     //messageId加锁
                     locked = distributeLockService.tryLock(DistributeLockEnum.EVENT_MESSAGE, messageId, requestId);

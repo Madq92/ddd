@@ -19,7 +19,7 @@
 - [ ] integration 层 demo
 - [x] 用户管理 demo
 - [x] dao 层 mybatis-generate 插件
-- [ ] 唯一序列号生成数据库版本
+- [x] 唯一序列号生成数据库版本
 - [ ] 分布式锁实现服务
 - [ ] 项目脚手架
 - [ ] 文档补充

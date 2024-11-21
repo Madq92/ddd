@@ -9,8 +9,8 @@ import org.apache.commons.lang3.StringUtils;
  */
 @Getter
 public enum SequenceIdEnum {
+    DEFAULT("default", "默认"),
     USER("user", "用户表"),
-
     ;
 
 

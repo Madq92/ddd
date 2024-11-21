@@ -24,11 +24,6 @@
             <groupId>cc.mikaka</groupId>
             <artifactId>ddd-integration</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct</artifactId>
-        </dependency>
     </dependencies>
 
     <build>
